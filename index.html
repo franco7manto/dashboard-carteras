@@ -101,13 +101,19 @@
     return nombre.split(',').map(p => p.trim()[0]).join('').toUpperCase().substring(0,2);
   }
 
-  function formatFecha(fechaStr) {
-    if (!fechaStr) return 'Sin datos cargados';
-    // La fecha viene como string de Google Sheets
-    const d = new Date(fechaStr);
-    if (isNaN(d)) return fechaStr;
-    return 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+function formatFecha(fechaStr) {
+  if (!fechaStr) return 'Sin datos cargados';
+  // Google Sheets devuelve fechas como "Date(2026,5,2,0,5,30)"
+  const match = String(fechaStr).match(/Date\((\d+),(\d+),(\d+)/);
+  if (match) {
+    const [_, y, m, d] = match;
+    const fecha = new Date(y, m, d);
+    return 'Actualizado ' + fecha.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
   }
+  const d = new Date(fechaStr);
+  if (!isNaN(d)) return 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+  return fechaStr;
+}
 
   function renderCuentas(cuentas) {
     const app = document.getElementById('app');
