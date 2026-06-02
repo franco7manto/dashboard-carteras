@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Carteras</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f4;
+      --text-primary: #1c1917;
+      --text-secondary: #78716c;
+      --border: #e7e5e4;
+      --green: #1D9E75;
+      --red: #dc2626;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1c1917;
+        --bg-secondary: #292524;
+        --text-primary: #fafaf9;
+        --text-secondary: #a8a29e;
+        --border: #44403c;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-secondary); color: var(--text-primary); }
+    .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
+    .account-list { display: grid; gap: 10px; margin-bottom: 1.5rem; }
+    .account-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .account-card:hover { border-color: var(--text-secondary); }
+    .account-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 500; color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .account-name { font-size: 14px; font-weight: 500; }
+    .account-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .account-card.sin-datos { opacity: 0.45; }
+    .btn-new {
+      width: 100%; padding: 0.75rem;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border);
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; font-size: 14px; color: var(--text-secondary);
+    }
+    .loading { text-align: center; padding: 3rem; color: var(--text-secondary); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="app">
+  <div class="loading">Cargando cuentas...</div>
+</div>
+
+<script>
+  const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
+  const API_KEY = ''; // Por ahora sin API key, usamos el endpoint público
+
+  async function cargarCuentas() {
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:json&sheet=Cuentas`;
+      const resp = await fetch(url);
+      const text = await resp.text();
+      // Google devuelve JSONP, hay que limpiar
+      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+      const rows = json.table.rows || [];
+
+      const cuentas = rows.map(r => ({
+        comitente: r.c[0]?.v || '',
+        nombre: r.c[1]?.v || '',
+        ultimaActualizacion: r.c[2]?.v || null,
+        fechaDatos: r.c[3]?.v || ''
+      }));
+
+      renderCuentas(cuentas);
+    } catch(e) {
+      document.getElementById('app').innerHTML = `<p style="color:red;padding:2rem">Error cargando datos: ${e.message}</p>`;
+    }
+  }
+
+  function iniciales(nombre) {
+    return nombre.split(',').map(p => p.trim()[0]).join('').toUpperCase().substring(0,2);
+  }
+
+  function formatFecha(fechaStr) {
+    if (!fechaStr) return 'Sin datos cargados';
+    // La fecha viene como string de Google Sheets
+    const d = new Date(fechaStr);
+    if (isNaN(d)) return fechaStr;
+    return 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+  }
+
+  function renderCuentas(cuentas) {
+    const app = document.getElementById('app');
+    const tieneDatos = c => c.ultimaActualizacion || c.fechaDatos;
+
+    app.innerHTML = `
+      <p class="subtitle">Dashboard de carteras</p>
+      <h1>Seleccionar cuenta</h1>
+      <div class="account-list">
+        ${cuentas.map(c => `
+          <div class="account-card ${!tieneDatos(c) ? 'sin-datos' : ''}" onclick="abrirCuenta('${c.comitente}')">
+            <div class="account-avatar">${iniciales(c.nombre)}</div>
+            <div>
+              <div class="account-name">${c.nombre}</div>
+              <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaActualizacion || c.fechaDatos)}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn-new">
+        <i class="ti ti-plus"></i>
+        Cuenta nueva
+      </button>
+    `;
+  }
+
+  function abrirCuenta(comitente) {
+    alert('Abriendo cuenta ' + comitente + ' — próximo paso!');
+  }
+
+  cargarCuentas();
+</script>
+</body>
+</html>
