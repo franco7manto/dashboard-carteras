@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <style>
     :root {
-      --bg-page:    #F5F3EE;
+      --bg-page:    #EDEAE3;
       --bg-card:    #FAFAF8;
       --bg-table-h: #F0FDFB;
       --bg-group:   #F2EFE9;
@@ -29,14 +29,14 @@
       --font:       'DM Sans', sans-serif;
     }
     html.dark {
-      --bg-page:    #1C1917;
-      --bg-card:    #292524;
+      --bg-page:    #111110;
+      --bg-card:    #1C1917;
       --bg-table-h: #042F2E;
-      --bg-group:   #1F1D1B;
+      --bg-group:   #161412;
       --text-1:     #FAFAF9;
       --text-2:     #A8A29E;
       --text-3:     #78716C;
-      --border:     #44403C;
+      --border:     #2C2927;
       --border-t:   #134E4A;
       --teal:       #14B8A6;
       --teal-dark:  #2DD4BF;
@@ -48,44 +48,27 @@
     body { font-family: var(--font); background: var(--bg-page); color: var(--text-1); font-size: 14px; transition: background 0.2s, color 0.2s; }
     button { font-family: var(--font); cursor: pointer; }
 
-    .topbar {
-      background: var(--bg-card); border-bottom: 0.5px solid var(--border);
-      padding: 0 1.5rem; display: flex; align-items: center;
-      justify-content: space-between; height: 44px;
-    }
+    .topbar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 44px; }
     .topbar-brand { font-size: 13px; font-weight: 500; color: var(--teal); letter-spacing: 0.02em; }
     .theme-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 5px; transition: border-color 0.15s; }
     .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
 
     .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
 
+    /* Cuentas */
     .screen-title-sub { font-size: 12px; color: var(--text-2); margin-bottom: 5px; letter-spacing: 0.03em; text-transform: uppercase; }
     .screen-title { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
     .account-list { display: grid; gap: 10px; margin-bottom: 1.25rem; }
-    .account-card {
-      background: var(--bg-card); border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg); padding: 1rem 1.25rem;
-      display: flex; align-items: center; gap: 12px;
-      cursor: pointer; transition: border-color 0.15s;
-    }
+    .account-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: border-color 0.15s; }
     .account-card:hover { border-color: var(--teal); }
-    .avatar {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: var(--teal-light); border: 0.5px solid var(--border-t);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 500; color: var(--teal-dark); flex-shrink: 0;
-    }
+    .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--teal-light); border: 0.5px solid var(--border-t); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: var(--teal-dark); flex-shrink: 0; }
     .account-name { font-size: 14px; font-weight: 500; }
     .account-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
     .account-card.sin-datos { opacity: 0.45; }
-    .btn-new {
-      width: 100%; padding: 0.75rem; border-radius: var(--radius-md);
-      border: 0.5px solid var(--border); background: none;
-      display: flex; align-items: center; justify-content: center;
-      gap: 8px; font-size: 13px; color: var(--text-2); transition: border-color 0.15s, color 0.15s;
-    }
+    .btn-new { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--text-2); transition: border-color 0.15s, color 0.15s; }
     .btn-new:hover { border-color: var(--teal); color: var(--teal); }
 
+    /* Header cuenta */
     .header { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 1.25rem 1.5rem; }
     .header-inner { max-width: 960px; margin: 0 auto; }
     .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
@@ -103,6 +86,7 @@
     .actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); background: none; border: none; transition: color 0.15s; }
     .actualizar-btn:hover { color: var(--teal); }
 
+    /* Tabs */
     .tabs-bar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); }
     .tabs-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; }
     .tab { padding: 12px 16px; font-size: 13px; color: var(--text-2); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; cursor: pointer; }
@@ -110,18 +94,21 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    /* Tabla posiciones */
+    .table-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
     .pos-table-wrap { overflow-x: auto; }
     .pos-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .pos-table th { background: var(--bg-table-h); color: var(--teal-dark); font-weight: 500; text-align: right; padding: 9px 10px; border-bottom: 0.5px solid var(--border-t); font-size: 11px; white-space: nowrap; }
+    .pos-table th { background: var(--bg-table-h); color: var(--teal-dark); font-weight: 500; text-align: right; padding: 9px 12px; border-bottom: 0.5px solid var(--border-t); font-size: 11px; white-space: nowrap; }
     .pos-table th:first-child { text-align: left; }
-    .pos-table td { padding: 9px 10px; text-align: right; border-bottom: 0.5px solid var(--border); color: var(--text-1); white-space: nowrap; }
+    .pos-table td { padding: 9px 12px; text-align: right; border-bottom: 0.5px solid var(--border); color: var(--text-1); white-space: nowrap; }
     .pos-table td:first-child { text-align: left; }
     .pos-table tr:last-child td { border-bottom: none; }
-    .group-row td { background: var(--bg-group); color: var(--text-2); font-weight: 500; font-size: 11px; padding: 5px 10px; border-bottom: 0.5px solid var(--border); }
+    .group-row td { background: var(--bg-group); color: var(--text-2); font-weight: 500; font-size: 11px; padding: 5px 12px; border-bottom: 0.5px solid var(--border); }
     .pos { color: var(--pos) !important; }
     .neg { color: var(--neg) !important; }
+    .neutral { color: var(--text-2) !important; }
     .ticker-name { font-weight: 500; font-size: 12px; }
-    .ticker-sub { font-size: 11px; color: var(--text-2); }
+    .ticker-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
     .loading { text-align: center; padding: 3rem; color: var(--text-2); font-size: 14px; }
   </style>
 </head>
@@ -134,57 +121,44 @@
   </button>
 </div>
 
-<div id="app">
-  <div class="loading">Cargando...</div>
-</div>
+<div id="app"><div class="loading">Cargando...</div></div>
 
 <script>
 const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
-const estado = { moneda: 'ARS', tc: 'CCL', comitente: null, posiciones: [], tc_data: {} };
+const estado = { moneda: 'ARS', tc: 'CCL', comitente: null, posiciones: [], movimientos: [], tc_data: {} };
 
 // ── Tema ──
 function initTheme() {
   const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const dark = saved ? saved === 'dark' : prefersDark;
+  const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.classList.toggle('dark', dark);
   updateThemeBtn(dark);
 }
-
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('theme', dark ? 'dark' : 'light');
   updateThemeBtn(dark);
 }
-
 function updateThemeBtn(dark) {
   const btn = document.getElementById('theme-btn');
   if (!btn) return;
-  btn.innerHTML = dark
-    ? '<i class="ti ti-moon" aria-hidden="true"></i> Oscuro'
-    : '<i class="ti ti-sun" aria-hidden="true"></i> Claro';
+  btn.innerHTML = dark ? '<i class="ti ti-moon"></i> Oscuro' : '<i class="ti ti-sun"></i> Claro';
 }
-
 initTheme();
 
 // ── Helpers ──
-function iniciales(nombre) {
-  return nombre.split(',').map(p => p.trim()[0] || '').join('').toUpperCase().substring(0,2);
-}
+function iniciales(n) { return n.split(',').map(p => p.trim()[0] || '').join('').toUpperCase().substring(0,2); }
 
 function formatFecha(v) {
   if (!v) return 'Sin datos cargados';
   const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
-  if (m) {
-    const f = new Date(+m[1], +m[2], +m[3]);
-    return 'Actualizado ' + f.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
-  }
+  if (m) return 'Actualizado ' + new Date(+m[1],+m[2],+m[3]).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
   const d = new Date(v);
-  return isNaN(d) ? v : 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+  return isNaN(d) ? v : 'Actualizado ' + d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
 }
 
 function fmtNum(n, dec=2) {
-  if (n == null || n === '') return '—';
+  if (n == null) return '—';
   return Math.abs(n).toLocaleString('es-AR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
 }
 
@@ -214,23 +188,22 @@ async function cargarCuentas() {
         <div class="account-list">
           ${cuentas.map(c => `
             <div class="account-card ${!c.ultimaAct && !c.fechaDatos ? 'sin-datos' : ''}"
-              onclick="abrirCuenta('${c.comitente}','${c.nombre.replace(/'/g,"\\'")}','${c.ultimaAct || c.fechaDatos}')">
+              onclick="abrirCuenta('${c.comitente}','${c.nombre.replace(/'/g,"\\'")}','${c.ultimaAct||c.fechaDatos}')">
               <div class="avatar">${iniciales(c.nombre)}</div>
               <div>
                 <div class="account-name">${c.nombre}</div>
-                <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaAct || c.fechaDatos)}</div>
+                <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaAct||c.fechaDatos)}</div>
               </div>
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
-        <button class="btn-new"><i class="ti ti-plus" aria-hidden="true"></i> Cuenta nueva</button>
+        <button class="btn-new"><i class="ti ti-plus"></i> Cuenta nueva</button>
       </div>`;
   } catch(e) {
     document.getElementById('app').innerHTML = `<div class="page"><p style="color:var(--neg)">Error: ${e.message}</p></div>`;
   }
 }
 
-// ── Header y cuenta ──
+// ── Header cuenta ──
 function abrirCuenta(comitente, nombre, fechaStr) {
   estado.comitente = comitente;
   document.getElementById('app').innerHTML = `
@@ -238,7 +211,7 @@ function abrirCuenta(comitente, nombre, fechaStr) {
       <div class="header-inner">
         <div class="header-top">
           <div style="display:flex;align-items:center;gap:10px">
-            <button class="back-btn" onclick="cargarCuentas()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Cuentas</button>
+            <button class="back-btn" onclick="cargarCuentas()"><i class="ti ti-arrow-left"></i> Cuentas</button>
             <span class="breadcrumb">· ${comitente} — ${nombre}</span>
           </div>
           <div class="toggles">
@@ -259,7 +232,7 @@ function abrirCuenta(comitente, nombre, fechaStr) {
           </div>
           <div style="text-align:right">
             <p style="font-size:12px;color:var(--text-2);margin-bottom:4px">${formatFecha(fechaStr)}</p>
-            <button class="actualizar-btn"><i class="ti ti-upload" aria-hidden="true"></i> Actualizar datos</button>
+            <button class="actualizar-btn"><i class="ti ti-upload"></i> Actualizar datos</button>
           </div>
         </div>
       </div>
@@ -276,7 +249,7 @@ function abrirCuenta(comitente, nombre, fechaStr) {
     <div id="tab-rendimiento" class="tab-content">
       <div class="page"><p style="color:var(--text-2)">Rendimiento — próximamente</p></div>
     </div>`;
-  cargarPosiciones(comitente);
+  cargarDatos(comitente);
 }
 
 function setMoneda(m) {
@@ -284,16 +257,14 @@ function setMoneda(m) {
   document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === m));
   document.getElementById('toggle-tc').classList.toggle('disabled', m !== 'USD');
   actualizarValuacion();
-  if (estado.posiciones.length) renderPosiciones(estado.posiciones);
+  if (estado.posiciones.length) renderPosiciones();
 }
-
 function setTC(tc) {
   estado.tc = tc;
   document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === tc));
   actualizarValuacion();
-  if (estado.posiciones.length) renderPosiciones(estado.posiciones);
+  if (estado.posiciones.length) renderPosiciones();
 }
-
 function setTab(tab) {
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === tab));
   document.querySelectorAll('.tab-content').forEach(d => d.classList.toggle('active', d.id === 'tab-' + tab));
@@ -302,98 +273,195 @@ function setTab(tab) {
 function getTCActual() {
   return estado.tc === 'CCL' ? (estado.tc_data.ccl || 1) : (estado.tc_data.mep || 1);
 }
-
-function convertir(importeArs) {
-  if (estado.moneda === 'ARS') return importeArs;
-  return importeArs / getTCActual();
+function convertir(ars) {
+  return estado.moneda === 'ARS' ? ars : ars / getTCActual();
 }
-
-function fmtImporte(importeArs) {
-  const val = convertir(importeArs);
-  const prefix = estado.moneda === 'ARS' ? '$ ' : 'USD ';
-  const cls = importeArs < 0 ? ' class="neg"' : '';
-  return `<span${cls}>${prefix}${fmtNum(Math.abs(val))}</span>`;
-}
+function prefix() { return estado.moneda === 'ARS' ? '$ ' : 'USD '; }
 
 function actualizarValuacion() {
   if (!estado.posiciones.length) return;
-  const total = estado.posiciones.reduce((s, p) => s + (p.importeArs || 0), 0);
+  const total = estado.posiciones.reduce((s,p) => s + (p.importeArs||0), 0);
   const el = document.getElementById('val-total');
-  if (!el) return;
-  const val = convertir(total);
-  const prefix = estado.moneda === 'ARS' ? '$ ' : 'USD ';
-  el.textContent = prefix + fmtNum(val);
+  if (el) el.textContent = prefix() + fmtNum(convertir(total));
 }
 
-// ── Posiciones ──
-async function cargarPosiciones(comitente) {
+// ── PPP ──
+function calcularPPP(movimientos) {
+  const ppp = {};
+  const movOrdenados = [...movimientos].sort((a,b) => new Date(a.fechaLiq) - new Date(b.fechaLiq));
+  movOrdenados.forEach(m => {
+    const t = m.ticker;
+    if (!t || !['COMPRA','VENTA'].includes(m.tipo)) return;
+    if (!ppp[t]) ppp[t] = { cantidad: 0, costoTotal: 0 };
+    const p = ppp[t];
+    if (m.tipo === 'COMPRA') {
+      p.costoTotal += m.neto;
+      p.cantidad += m.cantidad;
+    } else {
+      if (p.cantidad > 0) {
+        const pppActual = p.costoTotal / p.cantidad;
+        p.costoTotal -= pppActual * m.cantidad;
+        p.cantidad -= m.cantidad;
+        if (p.cantidad <= 0) { p.cantidad = 0; p.costoTotal = 0; }
+      }
+    }
+  });
+  const resultado = {};
+  Object.keys(ppp).forEach(t => {
+    resultado[t] = ppp[t].cantidad > 0 ? ppp[t].costoTotal / ppp[t].cantidad : 0;
+  });
+  return resultado;
+}
+
+// ── Carga de datos ──
+async function cargarDatos(comitente) {
   try {
-    const [rowsPos, rowsTC] = await Promise.all([
+    const [rowsPos, rowsMovs, rowsTC] = await Promise.all([
       fetchSheet('Posiciones'),
+      fetchSheet('Movimientos'),
       fetchSheet('TC')
     ]);
 
-    // TC: col A = fecha (Date obj), col B = ccl (número), col C = mep (número)
-    const tcRows = rowsTC.filter(r => r.c[1]?.v != null && r.c[2]?.v != null);
+    // TC: última fila con CCL y MEP numéricos
+    const tcRows = rowsTC.filter(r => typeof r.c[1]?.v === 'number' && typeof r.c[2]?.v === 'number');
     if (tcRows.length) {
-      const last = tcRows[tcRows.length - 1];
-      estado.tc_data = { ccl: Number(last.c[1].v), mep: Number(last.c[2].v) };
+      const last = tcRows[tcRows.length-1];
+      estado.tc_data = { ccl: last.c[1].v, mep: last.c[2].v };
     }
 
-    const posiciones = rowsPos
+    // Posiciones
+    estado.posiciones = rowsPos
       .map(r => ({
-        comitente:  String(r.c[0]?.v || ''),
-        ticker:     r.c[1]?.v || '',
-        nombre:     r.c[2]?.v || '',
-        tipo:       r.c[3]?.v || '',
+        comitente:  String(r.c[0]?.v||''),
+        ticker:     r.c[1]?.v||'',
+        nombre:     r.c[2]?.v||'',
+        tipo:       r.c[3]?.v||'',
         cantidad:   r.c[4]?.v != null ? Number(r.c[4].v) : null,
         precio:     r.c[5]?.v != null ? Number(r.c[5].v) : null,
         importeArs: r.c[6]?.v != null ? Number(r.c[6].v) : 0,
       }))
       .filter(p => p.comitente === String(comitente));
 
-    estado.posiciones = posiciones;
+    // Movimientos
+    estado.movimientos = rowsMovs
+      .map(r => ({
+        comitente:  String(r.c[0]?.v||''),
+        fechaLiq:   r.c[1]?.v||'',
+        comprobante: r.c[3]?.v||'',
+        tipo:       r.c[4]?.v||'',
+        ticker:     r.c[5]?.v||'',
+        cantidad:   r.c[6]?.v != null ? Number(r.c[6].v) : 0,
+        precio:     r.c[7]?.v != null ? Number(r.c[7].v) : 0,
+        neto:       r.c[12]?.v != null ? Number(r.c[12].v) : 0,
+        signo:      r.c[13]?.v||'',
+      }))
+      .filter(m => m.comitente === String(comitente));
+
     actualizarValuacion();
-    renderPosiciones(posiciones);
+    renderPosiciones();
   } catch(e) {
     document.querySelector('#tab-portafolio .page').innerHTML = `<p style="color:var(--neg)">Error: ${e.message}</p>`;
   }
 }
 
-function renderPosiciones(posiciones) {
+// ── Render posiciones ──
+function renderPosiciones() {
+  const pppMap = calcularPPP(estado.movimientos);
+  const tc = getTCActual();
+  const esUSD = estado.moneda === 'USD';
+  const pre = prefix();
+
   const grupos = {};
-  posiciones.forEach(p => {
+  estado.posiciones.forEach(p => {
     if (!grupos[p.tipo]) grupos[p.tipo] = [];
     grupos[p.tipo].push(p);
   });
 
-  const orden = ['CEDEAR', 'Accion', 'Titulo', 'Cash'];
-  const nombres = { CEDEAR: 'CEDEARs', Accion: 'Acciones', Titulo: 'Títulos públicos', Cash: 'Cash' };
-  const prefix = estado.moneda === 'ARS' ? '$ ' : 'USD ';
+  const orden = ['CEDEAR','Accion','Titulo','Cash'];
+  const nomGrupo = { CEDEAR:'CEDEARs', Accion:'Acciones', Titulo:'Títulos públicos', Cash:'Cash' };
+  const esCash = tipo => tipo === 'Cash';
 
-  let html = '<div class="pos-table-wrap"><table class="pos-table"><thead><tr>';
-  html += `<th style="text-align:left;width:35%">Activo</th>`;
-  html += `<th>Cantidad</th><th>Precio</th><th>Importe ${prefix.trim()}</th>`;
-  html += '</tr></thead><tbody>';
+  // Columnas: Activo | Cantidad | Precio | PPP | Resultado $ | Var% total | Posición
+  let html = `<div class="table-card"><div class="pos-table-wrap"><table class="pos-table"><thead><tr>
+    <th style="text-align:left;min-width:200px">Activo</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>PPP</th>
+    <th>Resultado</th>
+    <th>Var% total</th>
+    <th>Posición ${pre.trim()}</th>
+  </tr></thead><tbody>`;
 
   orden.forEach(tipo => {
     if (!grupos[tipo]?.length) return;
-    const subtotal = grupos[tipo].reduce((s, p) => s + p.importeArs, 0);
-    const subtotalConv = convertir(subtotal);
-    html += `<tr class="group-row"><td colspan="3">${nombres[tipo] || tipo}</td><td>${prefix}${fmtNum(subtotalConv)}</td></tr>`;
+    const subtotalArs = grupos[tipo].reduce((s,p) => s+p.importeArs, 0);
+    const subtotalConv = convertir(subtotalArs);
+    html += `<tr class="group-row"><td colspan="6">${nomGrupo[tipo]||tipo}</td><td>${pre}${fmtNum(subtotalConv)}</td></tr>`;
 
     grupos[tipo].forEach(p => {
-      const precioConv = p.precio ? (estado.moneda === 'ARS' ? p.precio : p.precio / getTCActual()) : null;
+      const esCashRow = esCash(p.tipo);
+      const esMonedaUSD = ['USD','USD CV EX','USDC'].includes(p.ticker);
+
+      // Cantidad: siempre con 2 decimales para cash, 0 para activos enteros
+      let cantDisplay = '—';
+      if (p.cantidad != null) {
+        cantDisplay = esCashRow ? fmtNum(Math.abs(p.cantidad), 2) : fmtNum(p.cantidad, 0);
+      }
+
+      // Precio: para cash ARS = 1, para cash USD = TC, para activos = precio del PDF
+      let precioArs = p.precio;
+      let precioDisplay = '—';
+      if (esCashRow) {
+        if (p.ticker === 'ARS') { precioArs = 1; precioDisplay = esUSD ? 'USD ' + fmtNum(1/tc) : '$ 1,00'; }
+        else if (esMonedaUSD) { precioArs = tc; precioDisplay = esUSD ? 'USD 1,00' : '$ ' + fmtNum(tc, 0); }
+        else { precioDisplay = '—'; }
+      } else if (precioArs != null) {
+        precioDisplay = pre + fmtNum(esUSD ? precioArs/tc : precioArs);
+      }
+
+      // PPP
+      const pppVal = pppMap[p.ticker];
+      let pppDisplay = '—';
+      if (!esCashRow && pppVal) {
+        pppDisplay = pre + fmtNum(esUSD ? pppVal/tc : pppVal);
+      }
+
+      // Resultado y Var%
+      let resultDisplay = '—', varDisplay = '—';
+      if (!esCashRow && pppVal && p.cantidad && p.precio) {
+        const resultArs = (p.precio - pppVal) * p.cantidad;
+        const resultConv = convertir(resultArs);
+        const varPct = ((p.precio - pppVal) / pppVal) * 100;
+        const rClass = resultArs >= 0 ? 'pos' : 'neg';
+        const rSign = resultArs >= 0 ? '+' : '-';
+        resultDisplay = `<span class="${rClass}">${rSign}${pre}${fmtNum(Math.abs(resultConv))}</span>`;
+        const vSign = varPct >= 0 ? '↑ ' : '↓ ';
+        varDisplay = `<span class="${rClass}">${vSign}${Math.abs(varPct).toFixed(1)}%</span>`;
+      }
+
+      // Posición
+      let posArs = p.importeArs;
+      let posDisplay;
+      if (esCashRow && esMonedaUSD && p.cantidad != null) {
+        // Para cash USD, importe_ars ya está calculado; solo convertimos si es USD
+        posDisplay = `<span class="${p.importeArs < 0 ? 'neg' : ''}">${pre}${fmtNum(Math.abs(convertir(p.importeArs)))}</span>`;
+      } else {
+        posDisplay = `<span class="${p.importeArs < 0 ? 'neg' : ''}">${pre}${fmtNum(Math.abs(convertir(p.importeArs)))}</span>`;
+      }
+
       html += `<tr>
         <td><div class="ticker-name">${p.ticker}</div><div class="ticker-sub">${p.nombre}</div></td>
-        <td>${p.cantidad != null ? fmtNum(p.cantidad, 0) : '—'}</td>
-        <td>${precioConv != null ? prefix + fmtNum(precioConv) : '—'}</td>
-        <td>${fmtImporte(p.importeArs)}</td>
+        <td>${cantDisplay}</td>
+        <td>${precioDisplay}</td>
+        <td>${pppDisplay}</td>
+        <td>${resultDisplay}</td>
+        <td>${varDisplay}</td>
+        <td>${posDisplay}</td>
       </tr>`;
     });
   });
 
-  html += '</tbody></table></div>';
+  html += '</tbody></table></div></div>';
   document.querySelector('#tab-portafolio .page').innerHTML = html;
 }
 
