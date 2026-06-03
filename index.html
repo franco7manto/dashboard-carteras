@@ -10,96 +10,72 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <style>
     :root {
-      --bg-page:    #EDEAE3;
-      --bg-card:    #FAFAF8;
-      --bg-table-h: #F0FDFB;
-      --bg-group:   #D5F0EC;
-      --text-1:     #1A1917;
-      --text-2:     #78716C;
-      --text-3:     #A8A29E;
-      --border:     #E2DDD6;
-      --border-t:   #CCFBF1;
-      --teal:       #0D9488;
-      --teal-dark:  #0F766E;
-      --teal-light: #F0FDFB;
-      --pos:        #0D9488;
-      --neg:        #DC2626;
-      --radius-md:  8px;
-      --radius-lg:  12px;
-      --font:       'DM Sans', sans-serif;
+      --bg-page:#EDEAE3; --bg-card:#FAFAF8; --bg-table-h:#F0FDFB; --bg-group:#D5F0EC;
+      --text-1:#1A1917; --text-2:#78716C; --text-3:#A8A29E; --border:#E2DDD6; --border-t:#CCFBF1;
+      --teal:#0D9488; --teal-dark:#0F766E; --teal-light:#F0FDFB; --pos:#0D9488; --neg:#DC2626;
+      --radius-md:8px; --radius-lg:12px; --font:'DM Sans',sans-serif;
     }
     html.dark {
-      --bg-page:    #111110;
-      --bg-card:    #1C1917;
-      --bg-table-h: #042F2E;
-      --bg-group:   #0A3330;
-      --text-1:     #FAFAF9;
-      --text-2:     #A8A29E;
-      --text-3:     #78716C;
-      --border:     #2C2927;
-      --border-t:   #134E4A;
-      --teal:       #14B8A6;
-      --teal-dark:  #2DD4BF;
-      --teal-light: #042F2E;
-      --pos:        #14B8A6;
-      --neg:        #F87171;
+      --bg-page:#111110; --bg-card:#1C1917; --bg-table-h:#042F2E; --bg-group:#0A3330;
+      --text-1:#FAFAF9; --text-2:#A8A29E; --text-3:#78716C; --border:#2C2927; --border-t:#134E4A;
+      --teal:#14B8A6; --teal-dark:#2DD4BF; --teal-light:#042F2E; --pos:#14B8A6; --neg:#F87171;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg-page); color: var(--text-1); font-size: 14px; transition: background 0.2s, color 0.2s; }
-    button { font-family: var(--font); cursor: pointer; }
-    .topbar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 44px; }
-    .topbar-brand { font-size: 13px; font-weight: 500; color: var(--teal); letter-spacing: 0.02em; }
-    .theme-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 5px; transition: border-color 0.15s; }
-    .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
-    .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
-    .screen-title-sub { font-size: 12px; color: var(--text-2); margin-bottom: 5px; letter-spacing: 0.03em; text-transform: uppercase; }
-    .screen-title { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
-    .account-list { display: grid; gap: 10px; margin-bottom: 1.25rem; }
-    .account-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: border-color 0.15s; }
-    .account-card:hover { border-color: var(--teal); }
-    .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--teal-light); border: 0.5px solid var(--border-t); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: var(--teal-dark); flex-shrink: 0; }
-    .account-name { font-size: 14px; font-weight: 500; }
-    .account-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-    .account-card.sin-datos { opacity: 0.45; }
-    .btn-new { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--text-2); transition: border-color 0.15s, color 0.15s; }
-    .btn-new:hover { border-color: var(--teal); color: var(--teal); }
-    .header { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 1.25rem 1.5rem; }
-    .header-inner { max-width: 960px; margin: 0 auto; }
-    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
-    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); background: none; border: none; padding: 0; transition: color 0.15s; }
-    .back-btn:hover { color: var(--teal); }
-    .breadcrumb { font-size: 13px; color: var(--text-2); }
-    .toggles { display: flex; align-items: center; gap: 8px; }
-    .toggle-group { display: flex; border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
-    .toggle-btn { padding: 5px 14px; font-size: 12px; background: none; color: var(--text-2); border: none; transition: all 0.15s; }
-    .toggle-btn.active { background: var(--teal); color: white; }
-    .toggle-group.disabled { opacity: 0.35; pointer-events: none; }
-    .header-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
-    .valuacion-label { font-size: 13px; color: var(--text-2); margin-bottom: 4px; }
-    .valuacion-total { font-size: 28px; font-weight: 500; }
-    .actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); background: none; border: none; transition: color 0.15s; }
-    .actualizar-btn:hover { color: var(--teal); }
-    .tabs-bar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); }
-    .tabs-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; }
-    .tab { padding: 12px 16px; font-size: 13px; color: var(--text-2); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; cursor: pointer; }
-    .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .table-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .pos-table-wrap { overflow-x: auto; }
-    .pos-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .pos-table th { background: var(--bg-table-h); color: var(--teal-dark); font-weight: 500; text-align: right; padding: 9px 12px; border-bottom: 0.5px solid var(--border-t); font-size: 11px; white-space: nowrap; }
-    .pos-table th:first-child { text-align: left; }
-    .pos-table td { padding: 9px 12px; text-align: right; border-bottom: 0.5px solid var(--border); color: var(--text-1); white-space: nowrap; }
-    .pos-table td:first-child { text-align: left; }
-    .pos-table tr:last-child td { border-bottom: none; }
-    .group-row td { background: var(--bg-group); color: var(--teal-dark); font-weight: 500; font-size: 11px; padding: 5px 12px; border-bottom: 0.5px solid var(--border-t); }
-    .pos { color: var(--pos) !important; }
-    .neg { color: var(--neg) !important; }
-    .muted { color: var(--text-2) !important; font-size: 11px; }
-    .ticker-name { font-weight: 500; font-size: 12px; }
-    .ticker-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
-    .loading { text-align: center; padding: 3rem; color: var(--text-2); font-size: 14px; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--font); background:var(--bg-page); color:var(--text-1); font-size:14px; transition:background .2s,color .2s; }
+    button { font-family:var(--font); cursor:pointer; }
+    .topbar { background:var(--bg-card); border-bottom:0.5px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:44px; }
+    .topbar-brand { font-size:13px; font-weight:500; color:var(--teal); letter-spacing:.02em; }
+    .theme-btn { background:none; border:0.5px solid var(--border); border-radius:var(--radius-md); padding:4px 10px; font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:5px; transition:border-color .15s; }
+    .theme-btn:hover { border-color:var(--teal); color:var(--teal); }
+    .page { max-width:960px; margin:0 auto; padding:2rem 1.5rem; }
+    .screen-title-sub { font-size:12px; color:var(--text-2); margin-bottom:5px; letter-spacing:.03em; text-transform:uppercase; }
+    .screen-title { font-size:22px; font-weight:500; margin-bottom:1.5rem; }
+    .account-list { display:grid; gap:10px; margin-bottom:1.25rem; }
+    .account-card { background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.25rem; display:flex; align-items:center; gap:12px; cursor:pointer; transition:border-color .15s; }
+    .account-card:hover { border-color:var(--teal); }
+    .avatar { width:38px; height:38px; border-radius:50%; background:var(--teal-light); border:0.5px solid var(--border-t); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:500; color:var(--teal-dark); flex-shrink:0; }
+    .account-name { font-size:14px; font-weight:500; }
+    .account-meta { font-size:12px; color:var(--text-2); margin-top:2px; }
+    .account-card.sin-datos { opacity:.45; }
+    .btn-new { width:100%; padding:.75rem; border-radius:var(--radius-md); border:0.5px solid var(--border); background:none; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:var(--text-2); transition:border-color .15s,color .15s; }
+    .btn-new:hover { border-color:var(--teal); color:var(--teal); }
+    .header { background:var(--bg-card); border-bottom:0.5px solid var(--border); padding:1.25rem 1.5rem; }
+    .header-inner { max-width:960px; margin:0 auto; }
+    .header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; flex-wrap:wrap; gap:8px; }
+    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-2); background:none; border:none; padding:0; transition:color .15s; }
+    .back-btn:hover { color:var(--teal); }
+    .breadcrumb { font-size:13px; color:var(--text-2); }
+    .toggles { display:flex; align-items:center; gap:8px; }
+    .toggle-group { display:flex; border:0.5px solid var(--border); border-radius:var(--radius-md); overflow:hidden; }
+    .toggle-btn { padding:5px 14px; font-size:12px; background:none; color:var(--text-2); border:none; transition:all .15s; }
+    .toggle-btn.active { background:var(--teal); color:white; }
+    .toggle-group.disabled { opacity:.35; pointer-events:none; }
+    .header-bottom { display:flex; align-items:flex-end; justify-content:space-between; }
+    .valuacion-label { font-size:13px; color:var(--text-2); margin-bottom:4px; }
+    .valuacion-total { font-size:28px; font-weight:500; }
+    .actualizar-btn { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-2); background:none; border:none; transition:color .15s; }
+    .actualizar-btn:hover { color:var(--teal); }
+    .tabs-bar { background:var(--bg-card); border-bottom:0.5px solid var(--border); }
+    .tabs-inner { max-width:960px; margin:0 auto; padding:0 1.5rem; display:flex; }
+    .tab { padding:12px 16px; font-size:13px; color:var(--text-2); background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-0.5px; transition:all .15s; cursor:pointer; }
+    .tab.active { color:var(--teal); border-bottom-color:var(--teal); font-weight:500; }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+    .table-card { background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .pos-table-wrap { overflow-x:auto; }
+    .pos-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .pos-table th { background:var(--bg-table-h); color:var(--teal-dark); font-weight:500; text-align:right; padding:9px 12px; border-bottom:0.5px solid var(--border-t); font-size:11px; white-space:nowrap; }
+    .pos-table th:first-child { text-align:left; }
+    .pos-table td { padding:9px 12px; text-align:right; border-bottom:0.5px solid var(--border); color:var(--text-1); white-space:nowrap; }
+    .pos-table td:first-child { text-align:left; }
+    .pos-table tr:last-child td { border-bottom:none; }
+    .group-row td { background:var(--bg-group); color:var(--teal-dark); font-weight:500; font-size:11px; padding:5px 12px; border-bottom:0.5px solid var(--border-t); }
+    .pos { color:var(--pos)!important; }
+    .neg { color:var(--neg)!important; }
+    .muted { color:var(--text-2)!important; font-size:11px; }
+    .ticker-name { font-weight:500; font-size:12px; }
+    .ticker-sub { font-size:11px; color:var(--text-2); margin-top:1px; }
+    .loading { text-align:center; padding:3rem; color:var(--text-2); font-size:14px; }
   </style>
 </head>
 <body>
@@ -110,47 +86,42 @@
 <div id="app"><div class="loading">Cargando...</div></div>
 <script>
 const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
+const estado = { moneda:'ARS', tc:'CCL', comitente:null, posiciones:[], movimientos:[], tc_data:{}, tc_historico:[] };
 
-// Estado global
-const estado = {
-  moneda: 'ARS', tc: 'CCL',
-  comitente: null,
-  posiciones: [], movimientos: [],
-  tc_data: {}, tc_historico: [] // array de {fecha: Date, ccl, mep}
-};
-
-// ── Tema ──
 function initTheme() {
   const saved = localStorage.getItem('theme');
-  const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark = saved ? saved==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.classList.toggle('dark', dark);
   updateThemeBtn(dark);
 }
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
+  localStorage.setItem('theme', dark?'dark':'light');
   updateThemeBtn(dark);
 }
 function updateThemeBtn(dark) {
   const btn = document.getElementById('theme-btn');
-  if (!btn) return;
-  btn.innerHTML = dark ? '<i class="ti ti-moon"></i> Oscuro' : '<i class="ti ti-sun"></i> Claro';
+  if (btn) btn.innerHTML = dark ? '<i class="ti ti-moon"></i> Oscuro' : '<i class="ti ti-sun"></i> Claro';
 }
 initTheme();
 
-// ── Helpers ──
-function iniciales(n) { return n.split(',').map(p => p.trim()[0]||'').join('').toUpperCase().substring(0,2); }
+function iniciales(n) { return n.split(',').map(p=>p.trim()[0]||'').join('').toUpperCase().substring(0,2); }
 
-function parseFechaGviz(v) {
+// Acepta fecha en formato Date(...) gviz, texto "2013-01-02", o Date nativo
+function parseFecha(v) {
   if (!v) return null;
-  const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
+  const s = String(v);
+  const m = s.match(/Date\((\d+),(\d+),(\d+)/);
   if (m) return new Date(+m[1], +m[2], +m[3]);
-  const d = new Date(v);
+  // texto ISO "2013-01-02" o "2013-01-02 ..." 
+  const iso = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return new Date(+iso[1], +iso[2]-1, +iso[3]);
+  const d = new Date(s);
   return isNaN(d) ? null : d;
 }
 
 function formatFecha(v) {
-  const d = parseFechaGviz(v);
+  const d = parseFecha(v);
   if (!d) return 'Sin datos cargados';
   return 'Actualizado ' + d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
 }
@@ -168,88 +139,81 @@ async function fetchSheet(sheet) {
   return json.table.rows || [];
 }
 
-// ── TC histórico: buscar el TC más cercano a una fecha ──
+// TC más cercano (anterior o igual) a una fecha
 function getTCEnFecha(fecha, tipo='ccl') {
   if (!fecha || !estado.tc_historico.length) return estado.tc_data[tipo] || 1;
   const ts = fecha.getTime();
   let mejor = estado.tc_historico[0];
-  let menorDif = Math.abs(estado.tc_historico[0].fecha.getTime() - ts);
   for (const row of estado.tc_historico) {
-    const dif = Math.abs(row.fecha.getTime() - ts);
-    if (dif < menorDif) { menorDif = dif; mejor = row; }
-    if (row.fecha.getTime() > ts) break; // ya pasamos la fecha, el anterior era el más cercano
+    if (row.fecha.getTime() <= ts) mejor = row;
+    else break;
   }
   return mejor[tipo] || estado.tc_data[tipo] || 1;
 }
 
-function getTCActual() {
-  return estado.tc === 'CCL' ? (estado.tc_data.ccl||1) : (estado.tc_data.mep||1);
-}
-function convertir(ars) { return estado.moneda === 'ARS' ? ars : ars / getTCActual(); }
-function pre() { return estado.moneda === 'ARS' ? '$ ' : 'USD '; }
+function getTCActual() { return estado.tc==='CCL' ? (estado.tc_data.ccl||1) : (estado.tc_data.mep||1); }
+function convertir(ars) { return estado.moneda==='ARS' ? ars : ars/getTCActual(); }
+function pre() { return estado.moneda==='ARS' ? '$ ' : 'USD '; }
 
 function actualizarValuacion() {
   if (!estado.posiciones.length) return;
-  const total = estado.posiciones.reduce((s,p) => s+(p.importeArsReal||0), 0);
+  const total = estado.posiciones.reduce((s,p)=>s+(p.importeArsReal||0),0);
   const el = document.getElementById('val-total');
   if (el) el.textContent = pre() + fmtNum(convertir(total));
 }
 
-// ── PPP con TC histórico ──
+// PPP — devuelve {pppArs, pppUsd} por ticker
 function calcularPPP(movimientos) {
-  const acum = {};
-  const movOrdenados = [...movimientos]
+  const acum = {}; // ticker: {cantidad, costoArs, costoUsd}
+  const movs = [...movimientos]
     .filter(m => ['COMPRA','VENTA'].includes(m.tipo) && m.ticker)
-    .sort((a,b) => {
-      const da = parseFechaGviz(a.fechaLiq) || new Date(0);
-      const db = parseFechaGviz(b.fechaLiq) || new Date(0);
-      return da - db;
-    });
+    .sort((a,b) => (parseFecha(a.fechaLiq)||new Date(0)) - (parseFecha(b.fechaLiq)||new Date(0)));
 
-  movOrdenados.forEach(m => {
+  movs.forEach(m => {
     const t = m.ticker;
-    if (!acum[t]) acum[t] = { cantidad: 0, costoArs: 0 };
+    if (!acum[t]) acum[t] = { cantidad:0, costoArs:0, costoUsd:0 };
     const a = acum[t];
-    const fecha = parseFechaGviz(m.fechaLiq);
+    const fecha = parseFecha(m.fechaLiq);
+    const tcFecha = getTCEnFecha(fecha, 'ccl');
 
-    // Convertir neto a ARS según moneda de la operación, usando TC histórico de esa fecha
-    let netoArs;
+    // neto en ARS y en USD según la moneda de la operación y el TC de esa fecha
+    let netoArs, netoUsd;
     if (m.moneda === 'USD') {
-      const tcFecha = getTCEnFecha(fecha, 'ccl');
-      netoArs = Math.abs(m.neto) * tcFecha;
+      netoUsd = Math.abs(m.neto);
+      netoArs = netoUsd * tcFecha;
     } else {
       netoArs = Math.abs(m.neto);
+      netoUsd = netoArs / tcFecha;
     }
 
     if (m.tipo === 'COMPRA') {
-      a.costoArs += netoArs;
-      a.cantidad += m.cantidad;
+      a.costoArs += netoArs; a.costoUsd += netoUsd; a.cantidad += m.cantidad;
     } else {
       if (a.cantidad > 0) {
-        const pppAct = a.costoArs / a.cantidad;
-        a.costoArs -= pppAct * m.cantidad;
+        const fracVendida = m.cantidad / a.cantidad;
+        a.costoArs -= a.costoArs * fracVendida;
+        a.costoUsd -= a.costoUsd * fracVendida;
         a.cantidad -= m.cantidad;
-        if (a.cantidad <= 0) { a.cantidad = 0; a.costoArs = 0; }
+        if (a.cantidad <= 0) { a.cantidad=0; a.costoArs=0; a.costoUsd=0; }
       }
     }
   });
 
   const res = {};
   Object.keys(acum).forEach(t => {
-    res[t] = acum[t].cantidad > 0 ? acum[t].costoArs / acum[t].cantidad : null;
+    const a = acum[t];
+    res[t] = a.cantidad > 0
+      ? { pppArs: a.costoArs/a.cantidad, pppUsd: a.costoUsd/a.cantidad }
+      : null;
   });
   return res;
 }
 
-// ── Pantalla de cuentas ──
 async function cargarCuentas() {
   document.getElementById('app').innerHTML = '<div class="loading">Cargando cuentas...</div>';
   try {
     const rows = await fetchSheet('Cuentas');
-    const cuentas = rows.map(r => ({
-      comitente: r.c[0]?.v||'', nombre: r.c[1]?.v||'',
-      ultimaAct: r.c[2]?.v||null, fechaDatos: r.c[3]?.v||''
-    }));
+    const cuentas = rows.map(r => ({ comitente:r.c[0]?.v||'', nombre:r.c[1]?.v||'', ultimaAct:r.c[2]?.v||null, fechaDatos:r.c[3]?.v||'' }));
     document.getElementById('app').innerHTML = `
       <div class="page">
         <p class="screen-title-sub">Dashboard de carteras</p>
@@ -259,10 +223,8 @@ async function cargarCuentas() {
             <div class="account-card ${!c.ultimaAct&&!c.fechaDatos?'sin-datos':''}"
               onclick="abrirCuenta('${c.comitente}','${c.nombre.replace(/'/g,"\\'")}','${c.ultimaAct||c.fechaDatos}')">
               <div class="avatar">${iniciales(c.nombre)}</div>
-              <div>
-                <div class="account-name">${c.nombre}</div>
-                <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaAct||c.fechaDatos)}</div>
-              </div>
+              <div><div class="account-name">${c.nombre}</div>
+              <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaAct||c.fechaDatos)}</div></div>
             </div>`).join('')}
         </div>
         <button class="btn-new"><i class="ti ti-plus"></i> Cuenta nueva</button>
@@ -272,7 +234,6 @@ async function cargarCuentas() {
   }
 }
 
-// ── Header cuenta ──
 function abrirCuenta(comitente, nombre, fechaStr) {
   estado.comitente = comitente;
   document.getElementById('app').innerHTML = `
@@ -294,10 +255,7 @@ function abrirCuenta(comitente, nombre, fechaStr) {
         </div>
       </div>
       <div class="header-bottom">
-        <div>
-          <p class="valuacion-label">Valuación total</p>
-          <p class="valuacion-total" id="val-total">Cargando...</p>
-        </div>
+        <div><p class="valuacion-label">Valuación total</p><p class="valuacion-total" id="val-total">Cargando...</p></div>
         <div style="text-align:right">
           <p style="font-size:12px;color:var(--text-2);margin-bottom:4px">${formatFecha(fechaStr)}</p>
           <button class="actualizar-btn"><i class="ti ti-upload"></i> Actualizar datos</button>
@@ -308,90 +266,67 @@ function abrirCuenta(comitente, nombre, fechaStr) {
       <button class="tab active" onclick="setTab('portafolio')">Portafolio</button>
       <button class="tab" onclick="setTab('rendimiento')">Rendimiento</button>
     </div></div>
-    <div id="tab-portafolio" class="tab-content active">
-      <div class="page"><div class="loading">Cargando posiciones...</div></div>
-    </div>
-    <div id="tab-rendimiento" class="tab-content">
-      <div class="page"><p style="color:var(--text-2)">Rendimiento — próximamente</p></div>
-    </div>`;
+    <div id="tab-portafolio" class="tab-content active"><div class="page"><div class="loading">Cargando posiciones...</div></div></div>
+    <div id="tab-rendimiento" class="tab-content"><div class="page"><p style="color:var(--text-2)">Rendimiento — próximamente</p></div></div>`;
   cargarDatos(comitente);
 }
 
 function setMoneda(m) {
   estado.moneda = m;
-  document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent===m));
+  document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b=>b.classList.toggle('active',b.textContent===m));
   document.getElementById('toggle-tc').classList.toggle('disabled', m!=='USD');
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
 }
 function setTC(tc) {
   estado.tc = tc;
-  document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent===tc));
+  document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b=>b.classList.toggle('active',b.textContent===tc));
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
 }
 function setTab(tab) {
-  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase()===tab));
-  document.querySelectorAll('.tab-content').forEach(d => d.classList.toggle('active', d.id==='tab-'+tab));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===tab));
+  document.querySelectorAll('.tab-content').forEach(d=>d.classList.toggle('active',d.id==='tab-'+tab));
 }
 
-// ── Carga de datos ──
 async function cargarDatos(comitente) {
   try {
     const [rowsPos, rowsMovs, rowsTC] = await Promise.all([
-      fetchSheet('Posiciones'),
-      fetchSheet('Movimientos'),
-      fetchSheet('TC')
+      fetchSheet('Posiciones'), fetchSheet('Movimientos'), fetchSheet('TC')
     ]);
 
-    // TC histórico completo — guardamos todas las filas con valores numéricos
-    estado.tc_historico = rowsTC
-      .filter(r => typeof r.c[1]?.v === 'number' && typeof r.c[2]?.v === 'number')
-      .map(r => ({
-        fecha: parseFechaGviz(r.c[0]?.v),
-        ccl: r.c[1].v,
-        mep: r.c[2].v
-      }))
-      .filter(r => r.fecha)
-      .sort((a,b) => a.fecha - b.fecha);
+    // TC histórico — acepta fecha como texto o Date. Valores ccl/mep numéricos o texto.
+    estado.tc_historico = rowsTC.map(r => {
+      const fecha = parseFecha(r.c[0]?.v);
+      const ccl = r.c[1]?.v != null ? Number(r.c[1].v) : null;
+      const mep = r.c[2]?.v != null ? Number(r.c[2].v) : null;
+      return { fecha, ccl, mep };
+    }).filter(r => r.fecha && r.ccl).sort((a,b)=>a.fecha-b.fecha);
 
-    // TC actual = último registro
     if (estado.tc_historico.length) {
       const last = estado.tc_historico[estado.tc_historico.length-1];
-      estado.tc_data = { ccl: last.ccl, mep: last.mep };
+      estado.tc_data = { ccl: last.ccl, mep: last.mep || last.ccl };
     }
 
-    // Posiciones — normalizar cash
     const tc = estado.tc_data.ccl || 1;
     estado.posiciones = rowsPos.map(r => {
-      const ticker     = r.c[1]?.v||'';
-      const tipo       = r.c[3]?.v||'';
-      const cantRaw    = r.c[4]?.v != null ? Number(r.c[4].v) : null;
-      const precioRaw  = r.c[5]?.v != null ? Number(r.c[5].v) : null;
-      const importeRaw = r.c[6]?.v != null ? Number(r.c[6].v) : 0;
-      let cantidad = cantRaw, importeArsReal = importeRaw;
-      if (tipo === 'Cash') {
-        if (ticker === 'ARS') {
-          cantidad = importeRaw; importeArsReal = importeRaw;
-        } else if (['USD','USDC'].includes(ticker) && cantRaw == null) {
-          cantidad = importeRaw; importeArsReal = importeRaw * tc;
-        }
-        // USD CV EX: ya viene correcto
+      const ticker=r.c[1]?.v||'', tipo=r.c[3]?.v||'';
+      const cantRaw=r.c[4]?.v!=null?Number(r.c[4].v):null;
+      const precioRaw=r.c[5]?.v!=null?Number(r.c[5].v):null;
+      const importeRaw=r.c[6]?.v!=null?Number(r.c[6].v):0;
+      let cantidad=cantRaw, importeArsReal=importeRaw;
+      if (tipo==='Cash') {
+        if (ticker==='ARS') { cantidad=importeRaw; importeArsReal=importeRaw; }
+        else if (['USD','USDC'].includes(ticker) && cantRaw==null) { cantidad=importeRaw; importeArsReal=importeRaw*tc; }
       }
-      return { comitente: String(r.c[0]?.v||''), ticker, nombre: r.c[2]?.v||'', tipo, cantidad, precio: precioRaw, importeArs: importeRaw, importeArsReal };
-    }).filter(p => p.comitente === String(comitente));
+      return { comitente:String(r.c[0]?.v||''), ticker, nombre:r.c[2]?.v||'', tipo, cantidad, precio:precioRaw, importeArs:importeRaw, importeArsReal };
+    }).filter(p=>p.comitente===String(comitente));
 
-    // Movimientos
     estado.movimientos = rowsMovs.map(r => ({
-      comitente: String(r.c[0]?.v||''),
-      fechaLiq:  r.c[1]?.v||'',
-      tipo:      r.c[4]?.v||'',
-      ticker:    r.c[5]?.v||'',
-      cantidad:  r.c[6]?.v != null ? Number(r.c[6].v) : 0,
-      precio:    r.c[7]?.v != null ? Number(r.c[7].v) : 0,
-      moneda:    r.c[8]?.v||'ARS',
-      neto:      r.c[12]?.v != null ? Number(r.c[12].v) : 0,
-    })).filter(m => m.comitente === String(comitente));
+      comitente:String(r.c[0]?.v||''), fechaLiq:r.c[1]?.v||'', tipo:r.c[4]?.v||'', ticker:r.c[5]?.v||'',
+      cantidad:r.c[6]?.v!=null?Number(r.c[6].v):0, precio:r.c[7]?.v!=null?Number(r.c[7].v):0,
+      moneda:r.c[8]?.v||'ARS', neto:r.c[12]?.v!=null?Number(r.c[12].v):0
+    })).filter(m=>m.comitente===String(comitente));
 
     actualizarValuacion();
     renderPosiciones();
@@ -401,104 +336,85 @@ async function cargarDatos(comitente) {
   }
 }
 
-// ── Render posiciones ──
 function renderPosiciones() {
   const pppMap = calcularPPP(estado.movimientos);
-  const esUSD = estado.moneda === 'USD';
+  const esUSD = estado.moneda==='USD';
   const p = pre();
   const tcActual = getTCActual();
 
-  // Tipos que usan "precio por cada 100 VN"
-  const esTitulo = tipo => tipo === 'Titulo';
-
   const grupos = {};
-  estado.posiciones.forEach(pos => {
-    if (!grupos[pos.tipo]) grupos[pos.tipo] = [];
-    grupos[pos.tipo].push(pos);
-  });
-
+  estado.posiciones.forEach(pos => { (grupos[pos.tipo] ||= []).push(pos); });
   const orden = ['CEDEAR','Accion','Titulo','Cash'];
   const nomGrupo = { CEDEAR:'CEDEARs', Accion:'Acciones', Titulo:'Títulos públicos', Cash:'Cash' };
 
   let html = `<div class="table-card"><div class="pos-table-wrap"><table class="pos-table"><thead><tr>
     <th style="text-align:left;min-width:180px">Activo</th>
-    <th>Cantidad</th>
-    <th>Precio</th>
-    <th>PPP</th>
-    <th>Resultado</th>
-    <th>Var% total</th>
-    <th>Posición ${p.trim()}</th>
+    <th>Cantidad</th><th>Precio</th><th>PPP</th><th>Resultado</th><th>Var% total</th><th>Posición ${p.trim()}</th>
   </tr></thead><tbody>`;
 
   orden.forEach(tipo => {
     if (!grupos[tipo]?.length) return;
-    const subtotalArs = grupos[tipo].reduce((s,pos) => s+(pos.importeArsReal||0), 0);
+    const subtotalArs = grupos[tipo].reduce((s,pos)=>s+(pos.importeArsReal||0),0);
     html += `<tr class="group-row"><td colspan="6">${nomGrupo[tipo]||tipo}</td><td>${p}${fmtNum(convertir(subtotalArs))}</td></tr>`;
 
     grupos[tipo].forEach(pos => {
-      const isCash = pos.tipo === 'Cash';
-      const isTitulo = esTitulo(pos.tipo);
+      const isCash = pos.tipo==='Cash';
+      const isTitulo = pos.tipo==='Titulo';
       const isUSDTicker = ['USD','USDC','USD CV EX'].includes(pos.ticker);
-
-      // Factor para bonos: precio viene en "por 100 VN"
-      const factorBono = isTitulo ? 100 : 1;
 
       // Cantidad
       let cantStr = '—';
       if (pos.cantidad != null) {
-        cantStr = fmtNum(Math.abs(pos.cantidad), isCash ? 2 : 0);
-        if (pos.ticker === 'ARS' && pos.cantidad < 0) cantStr = '-' + cantStr;
+        cantStr = fmtNum(Math.abs(pos.cantidad), isCash?2:0);
+        if (pos.ticker==='ARS' && pos.cantidad<0) cantStr = '-'+cantStr;
       }
 
-      // Precio
-      let precioStr = '—';
+      // Precio (precio del PDF está en la misma escala para todos: para bonos es "por 100 VN")
+      let precioStr='—';
       if (isCash) {
-        if (pos.ticker === 'ARS') precioStr = esUSD ? 'USD ' + fmtNum(1/tcActual, 6) : '$ 1,00';
-        else if (isUSDTicker) precioStr = esUSD ? 'USD 1,00' : '$ ' + fmtNum(tcActual, 0);
+        if (pos.ticker==='ARS') precioStr = esUSD ? 'USD '+fmtNum(1/tcActual,6) : '$ 1,00';
+        else if (isUSDTicker) precioStr = esUSD ? 'USD 1,00' : '$ '+fmtNum(tcActual,0);
       } else if (pos.precio != null) {
         precioStr = p + fmtNum(esUSD ? pos.precio/tcActual : pos.precio);
       }
 
-      // PPP
-      const pppArs = pppMap[pos.ticker];
-      let pppStr = '—';
-      let esTranferencia = false;
+      // PPP — el calculado viene en "costo por unidad". Para bonos hay que llevarlo
+      // a la escala "por 100 VN" multiplicando por 100, para comparar con el precio.
+      const ppp = pppMap[pos.ticker];
+      let pppStr='—', esTransf=false, pppEscalaPrecio=null;
       if (!isCash) {
-        if (pppArs) {
-          pppStr = p + fmtNum(esUSD ? pppArs/tcActual : pppArs);
+        if (ppp) {
+          // pppArs es costo por unidad nominal; el precio de bonos es por 100 VN
+          pppEscalaPrecio = isTitulo
+            ? { ars: ppp.pppArs*100, usd: ppp.pppUsd*100 }
+            : { ars: ppp.pppArs,     usd: ppp.pppUsd };
+          pppStr = p + fmtNum(esUSD ? pppEscalaPrecio.usd : pppEscalaPrecio.ars);
         } else {
           pppStr = '<span class="muted">Transf. valores</span>';
-          esTranferencia = true;
+          esTransf = true;
         }
       }
 
-      // Resultado y Var% — corregido para bonos (÷100 en la cantidad efectiva)
-      let resStr = '—', varStr = '—';
-      if (!isCash && !esTranferencia && pppArs && pos.cantidad && pos.precio) {
-        // Para bonos, el precio es "por cada 100 VN", así que la posición efectiva
-        // en unidades monetarias es cantidad/100 * precio
-        const cantEfectiva = pos.cantidad / factorBono;
-        const resArs = (pos.precio - pppArs) * cantEfectiva;
-        const resConv = convertir(resArs);
-        const varPct = ((pos.precio - pppArs) / pppArs) * 100;
-        const cls = resArs >= 0 ? 'pos' : 'neg';
-        resStr = `<span class="${cls}">${resArs>=0?'+':'-'}${p}${fmtNum(Math.abs(resConv))}</span>`;
+      // Resultado y Var% — comparando en la misma escala (precio vs ppp-escala-precio)
+      let resStr='—', varStr='—';
+      if (!isCash && !esTransf && pppEscalaPrecio && pos.cantidad && pos.precio) {
+        const pppComp = esUSD ? pppEscalaPrecio.usd : pppEscalaPrecio.ars;
+        const precioComp = esUSD ? pos.precio/tcActual : pos.precio;
+        // unidades efectivas: bonos cotizan por 100 VN
+        const cantEf = isTitulo ? pos.cantidad/100 : pos.cantidad;
+        const resVal = (precioComp - pppComp) * cantEf;
+        const varPct = ((precioComp - pppComp) / pppComp) * 100;
+        const cls = resVal>=0?'pos':'neg';
+        resStr = `<span class="${cls}">${resVal>=0?'+':'-'}${p}${fmtNum(Math.abs(resVal))}</span>`;
         varStr = `<span class="${cls}">${varPct>=0?'↑ ':'↓ '}${Math.abs(varPct).toFixed(1)}%</span>`;
       }
 
-      // Posición
       const posVal = convertir(pos.importeArsReal);
-      const posCls = pos.importeArsReal < 0 ? 'neg' : '';
-      const posStr = `<span class="${posCls}">${p}${fmtNum(Math.abs(posVal))}</span>`;
+      const posStr = `<span class="${pos.importeArsReal<0?'neg':''}">${p}${fmtNum(Math.abs(posVal))}</span>`;
 
       html += `<tr>
         <td><div class="ticker-name">${pos.ticker}</div><div class="ticker-sub">${pos.nombre}</div></td>
-        <td>${cantStr}</td>
-        <td>${precioStr}</td>
-        <td>${pppStr}</td>
-        <td>${resStr}</td>
-        <td>${varStr}</td>
-        <td>${posStr}</td>
+        <td>${cantStr}</td><td>${precioStr}</td><td>${pppStr}</td><td>${resStr}</td><td>${varStr}</td><td>${posStr}</td>
       </tr>`;
     });
   });
