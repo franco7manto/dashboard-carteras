@@ -4,171 +4,222 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Carteras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <style>
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f4;
-      --text-primary: #1c1917;
-      --text-secondary: #78716c;
-      --border: #e7e5e4;
-      --green: #1D9E75;
-      --red: #dc2626;
-      --radius-md: 8px;
-      --radius-lg: 12px;
+      --bg-page:     #F5F3EE;
+      --bg-card:     #FAFAF8;
+      --bg-table-h:  #F0FDFB;
+      --bg-group:    #F2EFE9;
+      --text-1:      #1A1917;
+      --text-2:      #78716C;
+      --text-3:      #A8A29E;
+      --border:      #E2DDD6;
+      --border-t:    #CCFBF1;
+      --teal:        #0D9488;
+      --teal-dark:   #0F766E;
+      --teal-light:  #F0FDFB;
+      --pos:         #0D9488;
+      --neg:         #DC2626;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --font:        'DM Sans', sans-serif;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-primary: #1c1917;
-        --bg-secondary: #292524;
-        --text-primary: #fafaf9;
-        --text-secondary: #a8a29e;
-        --border: #44403c;
+        --bg-page:    #1C1917;
+        --bg-card:    #292524;
+        --bg-table-h: #042F2E;
+        --bg-group:   #1F1D1B;
+        --text-1:     #FAFAF9;
+        --text-2:     #A8A29E;
+        --text-3:     #78716C;
+        --border:     #44403C;
+        --border-t:   #134E4A;
+        --teal:       #14B8A6;
+        --teal-dark:  #2DD4BF;
+        --teal-light: #042F2E;
+        --pos:        #14B8A6;
+        --neg:        #F87171;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-secondary); color: var(--text-primary); }
-    .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; }
-    .subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
-    h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
-    .account-list { display: grid; gap: 10px; margin-bottom: 1.5rem; }
+    body { font-family: var(--font); background: var(--bg-page); color: var(--text-1); font-size: 14px; }
+    button { font-family: var(--font); cursor: pointer; }
+
+    /* ── Layout ── */
+    .page { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* ── Pantalla de cuentas ── */
+    .screen-title-sub { font-size: 12px; color: var(--text-2); margin-bottom: 5px; letter-spacing: 0.02em; text-transform: uppercase; }
+    .screen-title { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
+    .account-list { display: grid; gap: 10px; margin-bottom: 1.25rem; }
     .account-card {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: border-color 0.15s;
+      background: var(--bg-card); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: border-color 0.15s;
     }
-    .account-card:hover { border-color: var(--text-secondary); }
-    .account-avatar {
+    .account-card:hover { border-color: var(--teal); }
+    .avatar {
       width: 38px; height: 38px; border-radius: 50%;
-      background: var(--bg-secondary);
+      background: var(--teal-light); border: 0.5px solid var(--border-t);
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 500; color: var(--text-secondary);
-      flex-shrink: 0;
+      font-size: 13px; font-weight: 500; color: var(--teal-dark); flex-shrink: 0;
     }
     .account-name { font-size: 14px; font-weight: 500; }
-    .account-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .account-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
     .account-card.sin-datos { opacity: 0.45; }
     .btn-new {
-      width: 100%; padding: 0.75rem;
-      border-radius: var(--radius-md);
-      border: 0.5px solid var(--border);
-      background: none; cursor: pointer;
+      width: 100%; padding: 0.75rem; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border); background: none;
       display: flex; align-items: center; justify-content: center;
-      gap: 8px; font-size: 14px; color: var(--text-secondary);
+      gap: 8px; font-size: 13px; color: var(--text-2);
+      transition: border-color 0.15s;
     }
-    .loading { text-align: center; padding: 3rem; color: var(--text-secondary); font-size: 14px; }
-    .header { background: var(--bg-primary); border-bottom: 0.5px solid var(--border); padding: 1.25rem 1.5rem; }
-.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
-.back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); background: none; border: none; cursor: pointer; padding: 0; }
-.breadcrumb { font-size: 13px; color: var(--text-secondary); }
-.toggle-group { display: flex; border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
-.toggle-btn { padding: 5px 14px; font-size: 12px; background: none; color: var(--text-secondary); border: none; cursor: pointer; }
-.toggle-btn.active { background: var(--text-primary); color: var(--bg-primary); }
-.toggle-group.disabled { opacity: 0.35; pointer-events: none; }
-.valuacion-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
-.valuacion-total { font-size: 28px; font-weight: 500; }
-.header-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
-.actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); background: none; border: none; cursor: pointer; }
-.cuenta-page { display: none; }
+    .btn-new:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* ── Header de cuenta ── */
+    .header {
+      background: var(--bg-card); border-bottom: 0.5px solid var(--border);
+      padding: 1.25rem 1.5rem; max-width: 100%;
+    }
+    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
+    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); background: none; border: none; padding: 0; transition: color 0.15s; }
+    .back-btn:hover { color: var(--teal); }
+    .breadcrumb { font-size: 13px; color: var(--text-2); }
+    .toggles { display: flex; align-items: center; gap: 8px; }
+    .toggle-group { display: flex; border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .toggle-btn { padding: 5px 14px; font-size: 12px; background: none; color: var(--text-2); border: none; transition: all 0.15s; }
+    .toggle-btn.active { background: var(--teal); color: white; }
+    .toggle-group.disabled { opacity: 0.35; pointer-events: none; }
+    .header-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
+    .valuacion-label { font-size: 13px; color: var(--text-2); margin-bottom: 4px; }
+    .valuacion-total { font-size: 28px; font-weight: 500; }
+    .actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); background: none; border: none; transition: color 0.15s; }
+    .actualizar-btn:hover { color: var(--teal); }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; background: var(--bg-card); }
+    .tab { padding: 12px 16px; font-size: 13px; color: var(--text-2); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; cursor: pointer; }
+    .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Tabla de posiciones ── */
+    .pos-table-wrap { overflow-x: auto; }
+    .pos-table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+    .pos-table th {
+      background: var(--bg-table-h); color: var(--teal-dark);
+      font-weight: 500; text-align: right; padding: 8px 8px;
+      border-bottom: 0.5px solid var(--border-t); font-size: 11px;
+    }
+    .pos-table th:first-child { text-align: left; }
+    .pos-table td { padding: 8px 8px; text-align: right; border-bottom: 0.5px solid var(--border); color: var(--text-1); }
+    .pos-table td:first-child { text-align: left; }
+    .pos-table tr:last-child td { border-bottom: none; }
+    .group-row td { background: var(--bg-group); color: var(--text-2); font-weight: 500; font-size: 11px; padding: 5px 8px; border-bottom: 0.5px solid var(--border); }
+    .pos { color: var(--pos) !important; }
+    .neg { color: var(--neg) !important; }
+    .ticker-name { font-weight: 500; font-size: 12px; }
+    .ticker-sub { font-size: 11px; color: var(--text-2); }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 3rem; color: var(--text-2); font-size: 14px; }
   </style>
 </head>
 <body>
 
-<div class="container" id="app">
-  <div class="loading">Cargando cuentas...</div>
+<div id="app">
+  <div class="loading">Cargando...</div>
 </div>
 
 <script>
-  const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
-  const API_KEY = ''; // Por ahora sin API key, usamos el endpoint público
+const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
+const estado = { moneda: 'ARS', tc: 'CCL', comitente: null, posiciones: [], tc_data: {} };
 
-  async function cargarCuentas() {
-    try {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:json&sheet=Cuentas`;
-      const resp = await fetch(url);
-      const text = await resp.text();
-      // Google devuelve JSONP, hay que limpiar
-      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-      const rows = json.table.rows || [];
-
-      const cuentas = rows.map(r => ({
-        comitente: r.c[0]?.v || '',
-        nombre: r.c[1]?.v || '',
-        ultimaActualizacion: r.c[2]?.v || null,
-        fechaDatos: r.c[3]?.v || ''
-      }));
-
-      renderCuentas(cuentas);
-    } catch(e) {
-      document.getElementById('app').innerHTML = `<p style="color:red;padding:2rem">Error cargando datos: ${e.message}</p>`;
-    }
-  }
-
-  function iniciales(nombre) {
-    return nombre.split(',').map(p => p.trim()[0]).join('').toUpperCase().substring(0,2);
-  }
-
-function formatFecha(fechaStr) {
-  if (!fechaStr) return 'Sin datos cargados';
-  // Google Sheets devuelve fechas como "Date(2026,5,2,0,5,30)"
-  const match = String(fechaStr).match(/Date\((\d+),(\d+),(\d+)/);
-  if (match) {
-    const [_, y, m, d] = match;
-    const fecha = new Date(y, m, d);
-    return 'Actualizado ' + fecha.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
-  }
-  const d = new Date(fechaStr);
-  if (!isNaN(d)) return 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
-  return fechaStr;
+// ── Helpers ──
+function iniciales(nombre) {
+  return nombre.split(',').map(p => p.trim()[0] || '').join('').toUpperCase().substring(0,2);
 }
 
-  function renderCuentas(cuentas) {
-    const app = document.getElementById('app');
-    const tieneDatos = c => c.ultimaActualizacion || c.fechaDatos;
-
-    app.innerHTML = `
-      <p class="subtitle">Dashboard de carteras</p>
-      <h1>Seleccionar cuenta</h1>
-      <div class="account-list">
-        ${cuentas.map(c => `
-          <div class="account-card ${!tieneDatos(c) ? 'sin-datos' : ''}" onclick="abrirCuenta('${c.comitente}')">
-            <div class="account-avatar">${iniciales(c.nombre)}</div>
-            <div>
-              <div class="account-name">${c.nombre}</div>
-              <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaActualizacion || c.fechaDatos)}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <button class="btn-new">
-        <i class="ti ti-plus"></i>
-        Cuenta nueva
-      </button>
-    `;
+function formatFecha(v) {
+  if (!v) return 'Sin datos cargados';
+  const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
+  if (m) {
+    const f = new Date(+m[1], +m[2], +m[3]);
+    return 'Actualizado ' + f.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
   }
+  const d = new Date(v);
+  return isNaN(d) ? v : 'Actualizado ' + d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
 
- // Estado global
-const estado = { moneda: 'ARS', tc: 'CCL', comitente: null };
+function fmtARS(n) {
+  if (n == null || n === '') return '—';
+  return n.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
 
-function abrirCuenta(comitente) {
+function fmtPct(n) {
+  if (n == null) return '—';
+  const s = n >= 0 ? '↑ ' : '↓ ';
+  return `<span class="${n>=0?'pos':'neg'}">${s}${Math.abs(n).toFixed(1)}%</span>`;
+}
+
+async function fetchSheet(sheet) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheet)}`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  return json.table.rows || [];
+}
+
+// ── Pantalla de cuentas ──
+async function cargarCuentas() {
+  document.getElementById('app').innerHTML = '<div class="loading">Cargando cuentas...</div>';
+  try {
+    const rows = await fetchSheet('Cuentas');
+    const cuentas = rows.map(r => ({
+      comitente: r.c[0]?.v || '',
+      nombre:    r.c[1]?.v || '',
+      ultimaAct: r.c[2]?.v || null,
+      fechaDatos: r.c[3]?.v || ''
+    }));
+    document.getElementById('app').innerHTML = `
+      <div class="page">
+        <p class="screen-title-sub">Dashboard de carteras</p>
+        <h1 class="screen-title">Seleccionar cuenta</h1>
+        <div class="account-list">
+          ${cuentas.map(c => `
+            <div class="account-card ${!c.ultimaAct && !c.fechaDatos ? 'sin-datos' : ''}" onclick="abrirCuenta('${c.comitente}','${c.nombre}','${c.ultimaAct || c.fechaDatos}')">
+              <div class="avatar">${iniciales(c.nombre)}</div>
+              <div>
+                <div class="account-name">${c.nombre}</div>
+                <div class="account-meta">Cuenta ${c.comitente} · ${formatFecha(c.ultimaAct || c.fechaDatos)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-new"><i class="ti ti-plus" aria-hidden="true"></i> Cuenta nueva</button>
+      </div>`;
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="page"><p style="color:var(--neg)">Error: ${e.message}</p></div>`;
+  }
+}
+
+// ── Header de cuenta ──
+function abrirCuenta(comitente, nombre, fechaStr) {
   estado.comitente = comitente;
-  const app = document.getElementById('app');
-  app.innerHTML = `
+  document.getElementById('app').innerHTML = `
     <div class="header">
       <div class="header-top">
         <div style="display:flex;align-items:center;gap:10px">
-          <button class="back-btn" onclick="cargarCuentas()">
-            <i class="ti ti-arrow-left"></i> Cuentas
-          </button>
-          <span class="breadcrumb">· 310701 — Villa Galvan, Franco</span>
+          <button class="back-btn" onclick="cargarCuentas()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Cuentas</button>
+          <span class="breadcrumb">· ${comitente} — ${nombre}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
+        <div class="toggles">
           <div class="toggle-group" id="toggle-moneda">
             <button class="toggle-btn active" onclick="setMoneda('ARS')">ARS</button>
             <button class="toggle-btn" onclick="setMoneda('USD')">USD</button>
@@ -182,29 +233,35 @@ function abrirCuenta(comitente) {
       <div class="header-bottom">
         <div>
           <p class="valuacion-label">Valuación total</p>
-          <p class="valuacion-total" id="valuacion-total">Calculando...</p>
+          <p class="valuacion-total" id="val-total">Cargando...</p>
         </div>
         <div style="text-align:right">
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:4px" id="fecha-datos"></p>
-          <button class="actualizar-btn">
-            <i class="ti ti-upload"></i> Actualizar datos
-          </button>
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:4px">${formatFecha(fechaStr)}</p>
+          <button class="actualizar-btn"><i class="ti ti-upload" aria-hidden="true"></i> Actualizar datos</button>
         </div>
       </div>
     </div>
-    <div class="container" id="cuenta-content">
-      <p style="color:var(--text-secondary);font-size:14px;padding:2rem 0">Cargando posiciones...</p>
+    <div class="tabs">
+      <button class="tab active" onclick="setTab('portafolio')">Portafolio</button>
+      <button class="tab" onclick="setTab('rendimiento')">Rendimiento</button>
     </div>
-  `;
+    <div id="tab-portafolio" class="tab-content active">
+      <div class="page" style="padding-top:1.5rem">
+        <div class="loading">Cargando posiciones...</div>
+      </div>
+    </div>
+    <div id="tab-rendimiento" class="tab-content">
+      <div class="page" style="padding-top:1.5rem">
+        <p style="color:var(--text-2)">Rendimiento — próximamente</p>
+      </div>
+    </div>`;
   cargarPosiciones(comitente);
 }
 
 function setMoneda(m) {
   estado.moneda = m;
   document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === m));
-  const tcGroup = document.getElementById('toggle-tc');
-  if (m === 'USD') { tcGroup.classList.remove('disabled'); }
-  else { tcGroup.classList.add('disabled'); }
+  document.getElementById('toggle-tc').classList.toggle('disabled', m !== 'USD');
   actualizarValuacion();
 }
 
@@ -214,17 +271,92 @@ function setTC(tc) {
   actualizarValuacion();
 }
 
+function setTab(tab) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === tab));
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.toggle('active', d.id === 'tab-' + tab));
+}
+
 function actualizarValuacion() {
-  // Por ahora placeholder — después calcula con los precios reales
-  document.getElementById('valuacion-total').textContent = estado.moneda === 'ARS' ? '$ 6.612.257,88' : 'USD 4.617,76';
+  if (!estado.posiciones.length) return;
+  const total = estado.posiciones.reduce((s, p) => s + (p.importeArs || 0), 0);
+  const el = document.getElementById('val-total');
+  if (!el) return;
+  if (estado.moneda === 'ARS') {
+    el.textContent = '$ ' + fmtARS(total);
+  } else {
+    const tc = estado.tc === 'CCL' ? (estado.tc_data.ccl || 1) : (estado.tc_data.mep || 1);
+    el.textContent = 'USD ' + fmtARS(total / tc);
+  }
 }
 
+// ── Posiciones ──
 async function cargarPosiciones(comitente) {
-  // Próximo paso
-  document.getElementById('cuenta-content').innerHTML = '<p style="color:var(--text-secondary);font-size:14px;padding:2rem 0">Posiciones — próximo widget</p>';
+  try {
+    const [rowsPos, rowsTC] = await Promise.all([
+      fetchSheet('Posiciones'),
+      fetchSheet('TC')
+    ]);
+
+    // Último TC disponible
+    const tcRows = rowsTC.filter(r => r.c[1]?.v && r.c[2]?.v);
+    if (tcRows.length) {
+      const last = tcRows[tcRows.length - 1];
+      estado.tc_data = { ccl: last.c[1].v, mep: last.c[2].v };
+    }
+
+    const posiciones = rowsPos
+      .map(r => ({
+        comitente: String(r.c[0]?.v || ''),
+        ticker:    r.c[1]?.v || '',
+        nombre:    r.c[2]?.v || '',
+        tipo:      r.c[3]?.v || '',
+        cantidad:  r.c[4]?.v || 0,
+        precio:    r.c[5]?.v || 0,
+        importeArs: r.c[6]?.v || 0,
+      }))
+      .filter(p => p.comitente === String(comitente));
+
+    estado.posiciones = posiciones;
+    actualizarValuacion();
+    renderPosiciones(posiciones);
+  } catch(e) {
+    document.querySelector('#tab-portafolio .page').innerHTML = `<p style="color:var(--neg)">Error: ${e.message}</p>`;
+  }
 }
 
-  cargarCuentas();
+function renderPosiciones(posiciones) {
+  const grupos = {};
+  posiciones.forEach(p => {
+    if (!grupos[p.tipo]) grupos[p.tipo] = [];
+    grupos[p.tipo].push(p);
+  });
+
+  const orden = ['CEDEAR', 'Accion', 'Titulo', 'Cash'];
+  const nombres = { CEDEAR: 'CEDEARs', Accion: 'Acciones', Titulo: 'Títulos públicos', Cash: 'Cash' };
+
+  let html = '<div class="pos-table-wrap"><table class="pos-table"><thead><tr>';
+  html += '<th style="text-align:left">Activo</th><th>Cantidad</th><th>Precio</th><th>Importe ARS</th>';
+  html += '</tr></thead><tbody>';
+
+  orden.forEach(tipo => {
+    if (!grupos[tipo]?.length) return;
+    const subtotal = grupos[tipo].reduce((s, p) => s + p.importeArs, 0);
+    html += `<tr class="group-row"><td colspan="3">${nombres[tipo] || tipo}</td><td>$ ${fmtARS(subtotal)}</td></tr>`;
+    grupos[tipo].forEach(p => {
+      html += `<tr>
+        <td><div class="ticker-name">${p.ticker}</div><div class="ticker-sub">${p.nombre}</div></td>
+        <td>${p.cantidad ? fmtARS(p.cantidad) : '—'}</td>
+        <td>${p.precio ? fmtARS(p.precio) : '—'}</td>
+        <td>${p.importeArs < 0 ? '<span class="neg">' : ''}$ ${fmtARS(Math.abs(p.importeArs))}${p.importeArs < 0 ? '</span>' : ''}</td>
+      </tr>`;
+    });
+  });
+
+  html += '</tbody></table></div>';
+  document.querySelector('#tab-portafolio .page').innerHTML = html;
+}
+
+cargarCuentas();
 </script>
 </body>
 </html>
