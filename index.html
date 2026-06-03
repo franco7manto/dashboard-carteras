@@ -63,6 +63,19 @@
       gap: 8px; font-size: 14px; color: var(--text-secondary);
     }
     .loading { text-align: center; padding: 3rem; color: var(--text-secondary); font-size: 14px; }
+    .header { background: var(--bg-primary); border-bottom: 0.5px solid var(--border); padding: 1.25rem 1.5rem; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
+.back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); background: none; border: none; cursor: pointer; padding: 0; }
+.breadcrumb { font-size: 13px; color: var(--text-secondary); }
+.toggle-group { display: flex; border: 0.5px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.toggle-btn { padding: 5px 14px; font-size: 12px; background: none; color: var(--text-secondary); border: none; cursor: pointer; }
+.toggle-btn.active { background: var(--text-primary); color: var(--bg-primary); }
+.toggle-group.disabled { opacity: 0.35; pointer-events: none; }
+.valuacion-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+.valuacion-total { font-size: 28px; font-weight: 500; }
+.header-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
+.actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); background: none; border: none; cursor: pointer; }
+.cuenta-page { display: none; }
   </style>
 </head>
 <body>
@@ -140,11 +153,73 @@ function formatFecha(fechaStr) {
     `;
   }
 
-  function abrirCuenta(comitente) {
-    alert('Abriendo cuenta ' + comitente + ' — próximo paso!');
-  }
+ // Estado global
+const estado = { moneda: 'ARS', tc: 'CCL', comitente: null };
 
-  cargarCuentas();
-</script>
-</body>
-</html>
+function abrirCuenta(comitente) {
+  estado.comitente = comitente;
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-top">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="back-btn" onclick="cargarCuentas()">
+            <i class="ti ti-arrow-left"></i> Cuentas
+          </button>
+          <span class="breadcrumb">· 310701 — Villa Galvan, Franco</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="toggle-group" id="toggle-moneda">
+            <button class="toggle-btn active" onclick="setMoneda('ARS')">ARS</button>
+            <button class="toggle-btn" onclick="setMoneda('USD')">USD</button>
+          </div>
+          <div class="toggle-group disabled" id="toggle-tc">
+            <button class="toggle-btn" onclick="setTC('MEP')">MEP</button>
+            <button class="toggle-btn active" onclick="setTC('CCL')">CCL</button>
+          </div>
+        </div>
+      </div>
+      <div class="header-bottom">
+        <div>
+          <p class="valuacion-label">Valuación total</p>
+          <p class="valuacion-total" id="valuacion-total">Calculando...</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:4px" id="fecha-datos"></p>
+          <button class="actualizar-btn">
+            <i class="ti ti-upload"></i> Actualizar datos
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="container" id="cuenta-content">
+      <p style="color:var(--text-secondary);font-size:14px;padding:2rem 0">Cargando posiciones...</p>
+    </div>
+  `;
+  cargarPosiciones(comitente);
+}
+
+function setMoneda(m) {
+  estado.moneda = m;
+  document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === m));
+  const tcGroup = document.getElementById('toggle-tc');
+  if (m === 'USD') { tcGroup.classList.remove('disabled'); }
+  else { tcGroup.classList.add('disabled'); }
+  actualizarValuacion();
+}
+
+function setTC(tc) {
+  estado.tc = tc;
+  document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === tc));
+  actualizarValuacion();
+}
+
+function actualizarValuacion() {
+  // Por ahora placeholder — después calcula con los precios reales
+  document.getElementById('valuacion-total').textContent = estado.moneda === 'ARS' ? '$ 6.612.257,88' : 'USD 4.617,76';
+}
+
+async function cargarPosiciones(comitente) {
+  // Próximo paso
+  document.getElementById('cuenta-content').innerHTML = '<p style="color:var(--text-secondary);font-size:14px;padding:2rem 0">Posiciones — próximo widget</p>';
+}
