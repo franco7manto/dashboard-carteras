@@ -47,12 +47,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font); background: var(--bg-page); color: var(--text-1); font-size: 14px; transition: background 0.2s, color 0.2s; }
     button { font-family: var(--font); cursor: pointer; }
-
     .topbar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 44px; }
     .topbar-brand { font-size: 13px; font-weight: 500; color: var(--teal); letter-spacing: 0.02em; }
     .theme-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 5px; transition: border-color 0.15s; }
     .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
-
     .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
     .screen-title-sub { font-size: 12px; color: var(--text-2); margin-bottom: 5px; letter-spacing: 0.03em; text-transform: uppercase; }
     .screen-title { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; }
@@ -65,7 +63,6 @@
     .account-card.sin-datos { opacity: 0.45; }
     .btn-new { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--text-2); transition: border-color 0.15s, color 0.15s; }
     .btn-new:hover { border-color: var(--teal); color: var(--teal); }
-
     .header { background: var(--bg-card); border-bottom: 0.5px solid var(--border); padding: 1.25rem 1.5rem; }
     .header-inner { max-width: 960px; margin: 0 auto; }
     .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 8px; }
@@ -82,14 +79,12 @@
     .valuacion-total { font-size: 28px; font-weight: 500; }
     .actualizar-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); background: none; border: none; transition: color 0.15s; }
     .actualizar-btn:hover { color: var(--teal); }
-
     .tabs-bar { background: var(--bg-card); border-bottom: 0.5px solid var(--border); }
     .tabs-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; }
     .tab { padding: 12px 16px; font-size: 13px; color: var(--text-2); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; cursor: pointer; }
     .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
     .table-card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
     .pos-table-wrap { overflow-x: auto; }
     .pos-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -101,25 +96,28 @@
     .group-row td { background: var(--bg-group); color: var(--teal-dark); font-weight: 500; font-size: 11px; padding: 5px 12px; border-bottom: 0.5px solid var(--border-t); }
     .pos { color: var(--pos) !important; }
     .neg { color: var(--neg) !important; }
+    .muted { color: var(--text-2) !important; font-size: 11px; }
     .ticker-name { font-weight: 500; font-size: 12px; }
     .ticker-sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
     .loading { text-align: center; padding: 3rem; color: var(--text-2); font-size: 14px; }
   </style>
 </head>
 <body>
-
 <div class="topbar">
   <span class="topbar-brand">Dashboard Carteras</span>
-  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">
-    <i class="ti ti-sun"></i> Claro
-  </button>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn"><i class="ti ti-sun"></i> Claro</button>
 </div>
-
 <div id="app"><div class="loading">Cargando...</div></div>
-
 <script>
 const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
-const estado = { moneda: 'ARS', tc: 'CCL', comitente: null, posiciones: [], movimientos: [], tc_data: {} };
+
+// Estado global
+const estado = {
+  moneda: 'ARS', tc: 'CCL',
+  comitente: null,
+  posiciones: [], movimientos: [],
+  tc_data: {}, tc_historico: [] // array de {fecha: Date, ccl, mep}
+};
 
 // ── Tema ──
 function initTheme() {
@@ -141,14 +139,20 @@ function updateThemeBtn(dark) {
 initTheme();
 
 // ── Helpers ──
-function iniciales(n) { return n.split(',').map(p => p.trim()[0] || '').join('').toUpperCase().substring(0,2); }
+function iniciales(n) { return n.split(',').map(p => p.trim()[0]||'').join('').toUpperCase().substring(0,2); }
+
+function parseFechaGviz(v) {
+  if (!v) return null;
+  const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
+  if (m) return new Date(+m[1], +m[2], +m[3]);
+  const d = new Date(v);
+  return isNaN(d) ? null : d;
+}
 
 function formatFecha(v) {
-  if (!v) return 'Sin datos cargados';
-  const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
-  if (m) return 'Actualizado ' + new Date(+m[1],+m[2],+m[3]).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
-  const d = new Date(v);
-  return isNaN(d) ? v : 'Actualizado ' + d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const d = parseFechaGviz(v);
+  if (!d) return 'Sin datos cargados';
+  return 'Actualizado ' + d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
 }
 
 function fmtNum(n, dec=2) {
@@ -164,16 +168,87 @@ async function fetchSheet(sheet) {
   return json.table.rows || [];
 }
 
+// ── TC histórico: buscar el TC más cercano a una fecha ──
+function getTCEnFecha(fecha, tipo='ccl') {
+  if (!fecha || !estado.tc_historico.length) return estado.tc_data[tipo] || 1;
+  const ts = fecha.getTime();
+  let mejor = estado.tc_historico[0];
+  let menorDif = Math.abs(estado.tc_historico[0].fecha.getTime() - ts);
+  for (const row of estado.tc_historico) {
+    const dif = Math.abs(row.fecha.getTime() - ts);
+    if (dif < menorDif) { menorDif = dif; mejor = row; }
+    if (row.fecha.getTime() > ts) break; // ya pasamos la fecha, el anterior era el más cercano
+  }
+  return mejor[tipo] || estado.tc_data[tipo] || 1;
+}
+
+function getTCActual() {
+  return estado.tc === 'CCL' ? (estado.tc_data.ccl||1) : (estado.tc_data.mep||1);
+}
+function convertir(ars) { return estado.moneda === 'ARS' ? ars : ars / getTCActual(); }
+function pre() { return estado.moneda === 'ARS' ? '$ ' : 'USD '; }
+
+function actualizarValuacion() {
+  if (!estado.posiciones.length) return;
+  const total = estado.posiciones.reduce((s,p) => s+(p.importeArsReal||0), 0);
+  const el = document.getElementById('val-total');
+  if (el) el.textContent = pre() + fmtNum(convertir(total));
+}
+
+// ── PPP con TC histórico ──
+function calcularPPP(movimientos) {
+  const acum = {};
+  const movOrdenados = [...movimientos]
+    .filter(m => ['COMPRA','VENTA'].includes(m.tipo) && m.ticker)
+    .sort((a,b) => {
+      const da = parseFechaGviz(a.fechaLiq) || new Date(0);
+      const db = parseFechaGviz(b.fechaLiq) || new Date(0);
+      return da - db;
+    });
+
+  movOrdenados.forEach(m => {
+    const t = m.ticker;
+    if (!acum[t]) acum[t] = { cantidad: 0, costoArs: 0 };
+    const a = acum[t];
+    const fecha = parseFechaGviz(m.fechaLiq);
+
+    // Convertir neto a ARS según moneda de la operación, usando TC histórico de esa fecha
+    let netoArs;
+    if (m.moneda === 'USD') {
+      const tcFecha = getTCEnFecha(fecha, 'ccl');
+      netoArs = Math.abs(m.neto) * tcFecha;
+    } else {
+      netoArs = Math.abs(m.neto);
+    }
+
+    if (m.tipo === 'COMPRA') {
+      a.costoArs += netoArs;
+      a.cantidad += m.cantidad;
+    } else {
+      if (a.cantidad > 0) {
+        const pppAct = a.costoArs / a.cantidad;
+        a.costoArs -= pppAct * m.cantidad;
+        a.cantidad -= m.cantidad;
+        if (a.cantidad <= 0) { a.cantidad = 0; a.costoArs = 0; }
+      }
+    }
+  });
+
+  const res = {};
+  Object.keys(acum).forEach(t => {
+    res[t] = acum[t].cantidad > 0 ? acum[t].costoArs / acum[t].cantidad : null;
+  });
+  return res;
+}
+
 // ── Pantalla de cuentas ──
 async function cargarCuentas() {
   document.getElementById('app').innerHTML = '<div class="loading">Cargando cuentas...</div>';
   try {
     const rows = await fetchSheet('Cuentas');
     const cuentas = rows.map(r => ({
-      comitente: r.c[0]?.v || '',
-      nombre:    r.c[1]?.v || '',
-      ultimaAct: r.c[2]?.v || null,
-      fechaDatos: r.c[3]?.v || ''
+      comitente: r.c[0]?.v||'', nombre: r.c[1]?.v||'',
+      ultimaAct: r.c[2]?.v||null, fechaDatos: r.c[3]?.v||''
     }));
     document.getElementById('app').innerHTML = `
       <div class="page">
@@ -181,7 +256,7 @@ async function cargarCuentas() {
         <h1 class="screen-title">Seleccionar cuenta</h1>
         <div class="account-list">
           ${cuentas.map(c => `
-            <div class="account-card ${!c.ultimaAct && !c.fechaDatos ? 'sin-datos' : ''}"
+            <div class="account-card ${!c.ultimaAct&&!c.fechaDatos?'sin-datos':''}"
               onclick="abrirCuenta('${c.comitente}','${c.nombre.replace(/'/g,"\\'")}','${c.ultimaAct||c.fechaDatos}')">
               <div class="avatar">${iniciales(c.nombre)}</div>
               <div>
@@ -201,42 +276,38 @@ async function cargarCuentas() {
 function abrirCuenta(comitente, nombre, fechaStr) {
   estado.comitente = comitente;
   document.getElementById('app').innerHTML = `
-    <div class="header">
-      <div class="header-inner">
-        <div class="header-top">
-          <div style="display:flex;align-items:center;gap:10px">
-            <button class="back-btn" onclick="cargarCuentas()"><i class="ti ti-arrow-left"></i> Cuentas</button>
-            <span class="breadcrumb">· ${comitente} — ${nombre}</span>
-          </div>
-          <div class="toggles">
-            <div class="toggle-group" id="toggle-moneda">
-              <button class="toggle-btn active" onclick="setMoneda('ARS')">ARS</button>
-              <button class="toggle-btn" onclick="setMoneda('USD')">USD</button>
-            </div>
-            <div class="toggle-group disabled" id="toggle-tc">
-              <button class="toggle-btn" onclick="setTC('MEP')">MEP</button>
-              <button class="toggle-btn active" onclick="setTC('CCL')">CCL</button>
-            </div>
-          </div>
+    <div class="header"><div class="header-inner">
+      <div class="header-top">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="back-btn" onclick="cargarCuentas()"><i class="ti ti-arrow-left"></i> Cuentas</button>
+          <span class="breadcrumb">· ${comitente} — ${nombre}</span>
         </div>
-        <div class="header-bottom">
-          <div>
-            <p class="valuacion-label">Valuación total</p>
-            <p class="valuacion-total" id="val-total">Cargando...</p>
+        <div class="toggles">
+          <div class="toggle-group" id="toggle-moneda">
+            <button class="toggle-btn active" onclick="setMoneda('ARS')">ARS</button>
+            <button class="toggle-btn" onclick="setMoneda('USD')">USD</button>
           </div>
-          <div style="text-align:right">
-            <p style="font-size:12px;color:var(--text-2);margin-bottom:4px">${formatFecha(fechaStr)}</p>
-            <button class="actualizar-btn"><i class="ti ti-upload"></i> Actualizar datos</button>
+          <div class="toggle-group disabled" id="toggle-tc">
+            <button class="toggle-btn" onclick="setTC('MEP')">MEP</button>
+            <button class="toggle-btn active" onclick="setTC('CCL')">CCL</button>
           </div>
         </div>
       </div>
-    </div>
-    <div class="tabs-bar">
-      <div class="tabs-inner">
-        <button class="tab active" onclick="setTab('portafolio')">Portafolio</button>
-        <button class="tab" onclick="setTab('rendimiento')">Rendimiento</button>
+      <div class="header-bottom">
+        <div>
+          <p class="valuacion-label">Valuación total</p>
+          <p class="valuacion-total" id="val-total">Cargando...</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:4px">${formatFecha(fechaStr)}</p>
+          <button class="actualizar-btn"><i class="ti ti-upload"></i> Actualizar datos</button>
+        </div>
       </div>
-    </div>
+    </div></div>
+    <div class="tabs-bar"><div class="tabs-inner">
+      <button class="tab active" onclick="setTab('portafolio')">Portafolio</button>
+      <button class="tab" onclick="setTab('rendimiento')">Rendimiento</button>
+    </div></div>
     <div id="tab-portafolio" class="tab-content active">
       <div class="page"><div class="loading">Cargando posiciones...</div></div>
     </div>
@@ -248,82 +319,20 @@ function abrirCuenta(comitente, nombre, fechaStr) {
 
 function setMoneda(m) {
   estado.moneda = m;
-  document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === m));
-  document.getElementById('toggle-tc').classList.toggle('disabled', m !== 'USD');
+  document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent===m));
+  document.getElementById('toggle-tc').classList.toggle('disabled', m!=='USD');
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
 }
 function setTC(tc) {
   estado.tc = tc;
-  document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent === tc));
+  document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b => b.classList.toggle('active', b.textContent===tc));
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
 }
 function setTab(tab) {
-  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === tab));
-  document.querySelectorAll('.tab-content').forEach(d => d.classList.toggle('active', d.id === 'tab-' + tab));
-}
-
-function getTCActual() {
-  return estado.tc === 'CCL' ? (estado.tc_data.ccl || 1) : (estado.tc_data.mep || 1);
-}
-function convertir(ars) {
-  return estado.moneda === 'ARS' ? ars : ars / getTCActual();
-}
-function pre() { return estado.moneda === 'ARS' ? '$ ' : 'USD '; }
-
-function actualizarValuacion() {
-  if (!estado.posiciones.length) return;
-  const total = estado.posiciones.reduce((s,p) => s + (p.importeArsReal||0), 0);
-  const el = document.getElementById('val-total');
-  if (el) el.textContent = pre() + fmtNum(convertir(total));
-}
-
-// ── PPP desde movimientos ──
-function calcularPPP(movimientos) {
-  const acum = {}; // { ticker: { cantidad, costoArs } }
-
-  const movOrdenados = [...movimientos]
-    .filter(m => ['COMPRA','VENTA'].includes(m.tipo) && m.ticker)
-    .sort((a,b) => {
-      const da = parseFechaGviz(a.fechaLiq), db = parseFechaGviz(b.fechaLiq);
-      return da - db;
-    });
-
-  movOrdenados.forEach(m => {
-    const t = m.ticker;
-    if (!acum[t]) acum[t] = { cantidad: 0, costoArs: 0 };
-    const a = acum[t];
-    const tc = estado.tc_data.ccl || 1;
-
-    // Convertir neto a ARS según moneda de la operación
-    const netoArs = m.moneda === 'USD' ? Math.abs(m.neto) * tc : Math.abs(m.neto);
-
-    if (m.tipo === 'COMPRA') {
-      a.costoArs += netoArs;
-      a.cantidad += m.cantidad;
-    } else { // VENTA
-      if (a.cantidad > 0) {
-        const pppAct = a.costoArs / a.cantidad;
-        a.costoArs -= pppAct * m.cantidad;
-        a.cantidad -= m.cantidad;
-        if (a.cantidad <= 0) { a.cantidad = 0; a.costoArs = 0; }
-      }
-    }
-  });
-
-  const res = {};
-  Object.keys(acum).forEach(t => {
-    res[t] = acum[t].cantidad > 0 ? acum[t].costoArs / acum[t].cantidad : null;
-  });
-  return res;
-}
-
-function parseFechaGviz(v) {
-  if (!v) return new Date(0);
-  const m = String(v).match(/Date\((\d+),(\d+),(\d+)/);
-  if (m) return new Date(+m[1],+m[2],+m[3]);
-  return new Date(v);
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase()===tab));
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.toggle('active', d.id==='tab-'+tab));
 }
 
 // ── Carga de datos ──
@@ -335,79 +344,72 @@ async function cargarDatos(comitente) {
       fetchSheet('TC')
     ]);
 
-    // TC
-    const tcRows = rowsTC.filter(r => typeof r.c[1]?.v === 'number' && typeof r.c[2]?.v === 'number');
-    if (tcRows.length) {
-      const last = tcRows[tcRows.length-1];
-      estado.tc_data = { ccl: last.c[1].v, mep: last.c[2].v };
+    // TC histórico completo — guardamos todas las filas con valores numéricos
+    estado.tc_historico = rowsTC
+      .filter(r => typeof r.c[1]?.v === 'number' && typeof r.c[2]?.v === 'number')
+      .map(r => ({
+        fecha: parseFechaGviz(r.c[0]?.v),
+        ccl: r.c[1].v,
+        mep: r.c[2].v
+      }))
+      .filter(r => r.fecha)
+      .sort((a,b) => a.fecha - b.fecha);
+
+    // TC actual = último registro
+    if (estado.tc_historico.length) {
+      const last = estado.tc_historico[estado.tc_historico.length-1];
+      estado.tc_data = { ccl: last.ccl, mep: last.mep };
     }
 
     // Posiciones — normalizar cash
-    estado.posiciones = rowsPos
-      .map(r => {
-        const ticker    = r.c[1]?.v || '';
-        const tipo      = r.c[3]?.v || '';
-        const cantRaw   = r.c[4]?.v != null ? Number(r.c[4].v) : null;
-        const precioRaw = r.c[5]?.v != null ? Number(r.c[5].v) : null;
-        const importeRaw = r.c[6]?.v != null ? Number(r.c[6].v) : 0;
-        const tc        = estado.tc_data.ccl || 1;
-
-        let cantidad = cantRaw;
-        let importeArsReal = importeRaw;
-
-        if (tipo === 'Cash') {
-          if (ticker === 'ARS') {
-            // cantidad = importe en pesos (puede ser negativo)
-            cantidad = importeRaw;
-            importeArsReal = importeRaw;
-          } else if (['USD','USDC'].includes(ticker) && cantRaw == null) {
-            // importeRaw es en realidad la cantidad en USD (el parser guardó mal)
-            cantidad = importeRaw;
-            importeArsReal = importeRaw * tc;
-          } else {
-            // USD CV EX: cantidad ya correcta, importe ya en ARS
-            cantidad = cantRaw;
-            importeArsReal = importeRaw;
-          }
+    const tc = estado.tc_data.ccl || 1;
+    estado.posiciones = rowsPos.map(r => {
+      const ticker     = r.c[1]?.v||'';
+      const tipo       = r.c[3]?.v||'';
+      const cantRaw    = r.c[4]?.v != null ? Number(r.c[4].v) : null;
+      const precioRaw  = r.c[5]?.v != null ? Number(r.c[5].v) : null;
+      const importeRaw = r.c[6]?.v != null ? Number(r.c[6].v) : 0;
+      let cantidad = cantRaw, importeArsReal = importeRaw;
+      if (tipo === 'Cash') {
+        if (ticker === 'ARS') {
+          cantidad = importeRaw; importeArsReal = importeRaw;
+        } else if (['USD','USDC'].includes(ticker) && cantRaw == null) {
+          cantidad = importeRaw; importeArsReal = importeRaw * tc;
         }
-
-        return {
-          comitente:    String(r.c[0]?.v||''),
-          ticker, nombre: r.c[2]?.v||'', tipo,
-          cantidad, precio: precioRaw, importeArs: importeRaw, importeArsReal
-        };
-      })
-      .filter(p => p.comitente === String(comitente));
+        // USD CV EX: ya viene correcto
+      }
+      return { comitente: String(r.c[0]?.v||''), ticker, nombre: r.c[2]?.v||'', tipo, cantidad, precio: precioRaw, importeArs: importeRaw, importeArsReal };
+    }).filter(p => p.comitente === String(comitente));
 
     // Movimientos
-    estado.movimientos = rowsMovs
-      .map(r => ({
-        comitente:  String(r.c[0]?.v||''),
-        fechaLiq:   r.c[1]?.v||'',
-        tipo:       r.c[4]?.v||'',
-        ticker:     r.c[5]?.v||'',
-        cantidad:   r.c[6]?.v != null ? Number(r.c[6].v) : 0,
-        precio:     r.c[7]?.v != null ? Number(r.c[7].v) : 0,
-        moneda:     r.c[8]?.v||'ARS',
-        neto:       r.c[12]?.v != null ? Number(r.c[12].v) : 0,
-        signo:      r.c[13]?.v||'',
-      }))
-      .filter(m => m.comitente === String(comitente));
+    estado.movimientos = rowsMovs.map(r => ({
+      comitente: String(r.c[0]?.v||''),
+      fechaLiq:  r.c[1]?.v||'',
+      tipo:      r.c[4]?.v||'',
+      ticker:    r.c[5]?.v||'',
+      cantidad:  r.c[6]?.v != null ? Number(r.c[6].v) : 0,
+      precio:    r.c[7]?.v != null ? Number(r.c[7].v) : 0,
+      moneda:    r.c[8]?.v||'ARS',
+      neto:      r.c[12]?.v != null ? Number(r.c[12].v) : 0,
+    })).filter(m => m.comitente === String(comitente));
 
     actualizarValuacion();
     renderPosiciones();
   } catch(e) {
-    document.querySelector('#tab-portafolio .page').innerHTML = `<p style="color:var(--neg)">Error: ${e.message}</p>`;
     console.error(e);
+    document.querySelector('#tab-portafolio .page').innerHTML = `<p style="color:var(--neg)">Error: ${e.message}</p>`;
   }
 }
 
 // ── Render posiciones ──
 function renderPosiciones() {
   const pppMap = calcularPPP(estado.movimientos);
-  const tc = getTCActual();
   const esUSD = estado.moneda === 'USD';
   const p = pre();
+  const tcActual = getTCActual();
+
+  // Tipos que usan "precio por cada 100 VN"
+  const esTitulo = tipo => tipo === 'Titulo';
 
   const grupos = {};
   estado.posiciones.forEach(pos => {
@@ -430,51 +432,61 @@ function renderPosiciones() {
 
   orden.forEach(tipo => {
     if (!grupos[tipo]?.length) return;
-    const subtotalArs = grupos[tipo].reduce((s,pos) => s + (pos.importeArsReal||0), 0);
+    const subtotalArs = grupos[tipo].reduce((s,pos) => s+(pos.importeArsReal||0), 0);
     html += `<tr class="group-row"><td colspan="6">${nomGrupo[tipo]||tipo}</td><td>${p}${fmtNum(convertir(subtotalArs))}</td></tr>`;
 
     grupos[tipo].forEach(pos => {
       const isCash = pos.tipo === 'Cash';
+      const isTitulo = esTitulo(pos.tipo);
       const isUSDTicker = ['USD','USDC','USD CV EX'].includes(pos.ticker);
 
-      // ── Cantidad ──
+      // Factor para bonos: precio viene en "por 100 VN"
+      const factorBono = isTitulo ? 100 : 1;
+
+      // Cantidad
       let cantStr = '—';
       if (pos.cantidad != null) {
         cantStr = fmtNum(Math.abs(pos.cantidad), isCash ? 2 : 0);
         if (pos.ticker === 'ARS' && pos.cantidad < 0) cantStr = '-' + cantStr;
       }
 
-      // ── Precio ──
+      // Precio
       let precioStr = '—';
       if (isCash) {
-        if (pos.ticker === 'ARS') {
-          precioStr = esUSD ? 'USD ' + fmtNum(1/tc, 6) : '$ 1,00';
-        } else if (isUSDTicker) {
-          precioStr = esUSD ? 'USD 1,00' : '$ ' + fmtNum(tc, 0);
-        }
+        if (pos.ticker === 'ARS') precioStr = esUSD ? 'USD ' + fmtNum(1/tcActual, 6) : '$ 1,00';
+        else if (isUSDTicker) precioStr = esUSD ? 'USD 1,00' : '$ ' + fmtNum(tcActual, 0);
       } else if (pos.precio != null) {
-        precioStr = p + fmtNum(esUSD ? pos.precio/tc : pos.precio);
+        precioStr = p + fmtNum(esUSD ? pos.precio/tcActual : pos.precio);
       }
 
-      // ── PPP ──
+      // PPP
+      const pppArs = pppMap[pos.ticker];
       let pppStr = '—';
-      const pppVal = pppMap[pos.ticker];
-      if (!isCash && pppVal) {
-        pppStr = p + fmtNum(esUSD ? pppVal/tc : pppVal);
+      let esTranferencia = false;
+      if (!isCash) {
+        if (pppArs) {
+          pppStr = p + fmtNum(esUSD ? pppArs/tcActual : pppArs);
+        } else {
+          pppStr = '<span class="muted">Transf. valores</span>';
+          esTranferencia = true;
+        }
       }
 
-      // ── Resultado y Var% ──
+      // Resultado y Var% — corregido para bonos (÷100 en la cantidad efectiva)
       let resStr = '—', varStr = '—';
-      if (!isCash && pppVal && pos.cantidad && pos.precio) {
-        const resArs = (pos.precio - pppVal) * pos.cantidad;
+      if (!isCash && !esTranferencia && pppArs && pos.cantidad && pos.precio) {
+        // Para bonos, el precio es "por cada 100 VN", así que la posición efectiva
+        // en unidades monetarias es cantidad/100 * precio
+        const cantEfectiva = pos.cantidad / factorBono;
+        const resArs = (pos.precio - pppArs) * cantEfectiva;
         const resConv = convertir(resArs);
-        const varPct = ((pos.precio - pppVal) / pppVal) * 100;
+        const varPct = ((pos.precio - pppArs) / pppArs) * 100;
         const cls = resArs >= 0 ? 'pos' : 'neg';
-        resStr  = `<span class="${cls}">${resArs>=0?'+':'-'}${p}${fmtNum(Math.abs(resConv))}</span>`;
-        varStr  = `<span class="${cls}">${varPct>=0?'↑ ':'↓ '}${Math.abs(varPct).toFixed(1)}%</span>`;
+        resStr = `<span class="${cls}">${resArs>=0?'+':'-'}${p}${fmtNum(Math.abs(resConv))}</span>`;
+        varStr = `<span class="${cls}">${varPct>=0?'↑ ':'↓ '}${Math.abs(varPct).toFixed(1)}%</span>`;
       }
 
-      // ── Posición ──
+      // Posición
       const posVal = convertir(pos.importeArsReal);
       const posCls = pos.importeArsReal < 0 ? 'neg' : '';
       const posStr = `<span class="${posCls}">${p}${fmtNum(Math.abs(posVal))}</span>`;
