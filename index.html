@@ -25,8 +25,27 @@
     button { font-family:var(--font); cursor:pointer; }
     .topbar { background:var(--bg-card); border-bottom:0.5px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:44px; }
     .topbar-brand { font-size:13px; font-weight:500; color:var(--teal); letter-spacing:.02em; }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
     .theme-btn { background:none; border:0.5px solid var(--border); border-radius:var(--radius-md); padding:4px 10px; font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:5px; transition:border-color .15s; }
     .theme-btn:hover { border-color:var(--teal); color:var(--teal); }
+    .session-btn { background:none; border:0.5px solid var(--border); border-radius:var(--radius-md); padding:4px 10px; font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:5px; transition:border-color .15s; }
+    .session-btn:hover { border-color:var(--neg); color:var(--neg); }
+
+    /* Pantalla de login */
+    .login-wrap { min-height:calc(100vh - 44px); display:flex; align-items:center; justify-content:center; padding:2rem; }
+    .login-card { background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:2rem; width:100%; max-width:440px; }
+    .login-title { font-size:18px; font-weight:500; margin-bottom:6px; }
+    .login-sub { font-size:13px; color:var(--text-2); margin-bottom:1.5rem; line-height:1.5; }
+    .login-label { font-size:12px; color:var(--text-2); margin-bottom:6px; display:block; }
+    .login-input { width:100%; padding:10px 12px; border:0.5px solid var(--border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font); color:var(--text-1); background:var(--bg-page); outline:none; transition:border-color .15s; }
+    .login-input:focus { border-color:var(--teal); }
+    .login-input.error { border-color:var(--neg); }
+    .login-error { font-size:12px; color:var(--neg); margin-top:6px; display:none; }
+    .login-btn { width:100%; margin-top:1rem; padding:10px; background:var(--teal); color:white; border:none; border-radius:var(--radius-md); font-size:14px; font-weight:500; transition:opacity .15s; }
+    .login-btn:hover { opacity:.9; }
+    .login-btn:disabled { opacity:.5; cursor:not-allowed; }
+    .login-note { font-size:11px; color:var(--text-3); margin-top:1rem; text-align:center; line-height:1.5; }
+
     .page { max-width:960px; margin:0 auto; padding:2rem 1.5rem; }
     .screen-title-sub { font-size:12px; color:var(--text-2); margin-bottom:5px; letter-spacing:.03em; text-transform:uppercase; }
     .screen-title { font-size:22px; font-weight:500; margin-bottom:1.5rem; }
@@ -81,13 +100,20 @@
 <body>
 <div class="topbar">
   <span class="topbar-brand">Dashboard Carteras</span>
-  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn"><i class="ti ti-sun"></i> Claro</button>
+  <div class="topbar-right">
+    <button class="session-btn" id="cerrar-sesion" onclick="cerrarSesion()" style="display:none">
+      <i class="ti ti-logout"></i> Cerrar sesión
+    </button>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn"><i class="ti ti-sun"></i> Claro</button>
+  </div>
 </div>
 <div id="app"><div class="loading">Cargando...</div></div>
 <script>
-const SHEETS_ID = '1CdFtg7Pv-IZ0arobV-iRVaW_KrQABKlKf0wJtvPqo1M';
+// ID del Sheets solo en memoria — nunca se persiste
+let SHEETS_ID = null;
 const estado = { moneda:'ARS', tc:'CCL', comitente:null, posiciones:[], movimientos:[], tc_data:{}, tc_historico:[] };
 
+// ── Tema ──
 function initTheme() {
   const saved = localStorage.getItem('theme');
   const dark = saved ? saved==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -105,17 +131,33 @@ function updateThemeBtn(dark) {
 }
 initTheme();
 
+// ── Sesión ──
+function cerrarSesion() {
+  SHEETS_ID = null;
+  estado.posiciones = []; estado.movimientos = []; estado.tc_historico = [];
+  document.getElementById('cerrar-sesion').style.display = 'none';
+  mostrarLogin();
+}
+
+// ── Helpers ──
 function iniciales(n) { return n.split(',').map(p=>p.trim()[0]||'').join('').toUpperCase().substring(0,2); }
 
-// Acepta fecha en formato Date(...) gviz, texto "2013-01-02", o Date nativo
+function parsearIDDesdeLink(input) {
+  // Acepta el ID directo o un link completo de Google Sheets
+  const m = input.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
+  if (m) return m[1];
+  // Si no tiene slash, puede ser el ID directo
+  if (/^[a-zA-Z0-9_-]{20,}$/.test(input.trim())) return input.trim();
+  return null;
+}
+
 function parseFecha(v) {
   if (!v) return null;
   const s = String(v);
   const m = s.match(/Date\((\d+),(\d+),(\d+)/);
-  if (m) return new Date(+m[1], +m[2], +m[3]);
-  // texto ISO "2013-01-02" o "2013-01-02 ..." 
+  if (m) return new Date(+m[1],+m[2],+m[3]);
   const iso = s.match(/(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) return new Date(+iso[1], +iso[2]-1, +iso[3]);
+  if (iso) return new Date(+iso[1],+iso[2]-1,+iso[3]);
   const d = new Date(s);
   return isNaN(d) ? null : d;
 }
@@ -127,99 +169,141 @@ function formatFecha(v) {
 }
 
 function fmtNum(n, dec=2) {
-  if (n == null || isNaN(n)) return '—';
-  return Math.abs(n).toLocaleString('es-AR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+  if (n==null||isNaN(n)) return '—';
+  return Math.abs(n).toLocaleString('es-AR',{minimumFractionDigits:dec,maximumFractionDigits:dec});
 }
 
 async function fetchSheet(sheet) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheet)}`;
   const resp = await fetch(url);
+  if (!resp.ok) throw new Error('No se pudo acceder al Sheets. Verificá que el link sea correcto y que tengas acceso.');
   const text = await resp.text();
-  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+  if (!match) throw new Error('Respuesta inválida del Sheets. ¿El Sheets es accesible con tu cuenta?');
+  const json = JSON.parse(match[1]);
   return json.table.rows || [];
 }
 
-// TC más cercano (anterior o igual) a una fecha
 function getTCEnFecha(fecha, tipo='ccl') {
-  if (!fecha || !estado.tc_historico.length) return estado.tc_data[tipo] || 1;
+  if (!fecha||!estado.tc_historico.length) return estado.tc_data[tipo]||1;
   const ts = fecha.getTime();
   let mejor = estado.tc_historico[0];
   for (const row of estado.tc_historico) {
-    if (row.fecha.getTime() <= ts) mejor = row;
+    if (row.fecha.getTime()<=ts) mejor=row;
     else break;
   }
-  return mejor[tipo] || estado.tc_data[tipo] || 1;
+  return mejor[tipo]||estado.tc_data[tipo]||1;
 }
 
-function getTCActual() { return estado.tc==='CCL' ? (estado.tc_data.ccl||1) : (estado.tc_data.mep||1); }
-function convertir(ars) { return estado.moneda==='ARS' ? ars : ars/getTCActual(); }
-function pre() { return estado.moneda==='ARS' ? '$ ' : 'USD '; }
+function getTCActual() { return estado.tc==='CCL'?(estado.tc_data.ccl||1):(estado.tc_data.mep||1); }
+function convertir(ars) { return estado.moneda==='ARS'?ars:ars/getTCActual(); }
+function pre() { return estado.moneda==='ARS'?'$ ':'USD '; }
 
 function actualizarValuacion() {
   if (!estado.posiciones.length) return;
   const total = estado.posiciones.reduce((s,p)=>s+(p.importeArsReal||0),0);
   const el = document.getElementById('val-total');
-  if (el) el.textContent = pre() + fmtNum(convertir(total));
+  if (el) el.textContent = pre()+fmtNum(convertir(total));
 }
 
-// PPP — devuelve {pppArs, pppUsd} por ticker
 function calcularPPP(movimientos) {
-  const acum = {}; // ticker: {cantidad, costoArs, costoUsd}
+  const acum = {};
   const movs = [...movimientos]
-    .filter(m => ['COMPRA','VENTA'].includes(m.tipo) && m.ticker)
-    .sort((a,b) => (parseFecha(a.fechaLiq)||new Date(0)) - (parseFecha(b.fechaLiq)||new Date(0)));
-
+    .filter(m=>['COMPRA','VENTA'].includes(m.tipo)&&m.ticker)
+    .sort((a,b)=>(parseFecha(a.fechaLiq)||new Date(0))-(parseFecha(b.fechaLiq)||new Date(0)));
   movs.forEach(m => {
     const t = m.ticker;
-    if (!acum[t]) acum[t] = { cantidad:0, costoArs:0, costoUsd:0 };
+    if (!acum[t]) acum[t]={cantidad:0,costoArs:0,costoUsd:0};
     const a = acum[t];
     const fecha = parseFecha(m.fechaLiq);
-    const tcFecha = getTCEnFecha(fecha, 'ccl');
-
-    // neto en ARS y en USD según la moneda de la operación y el TC de esa fecha
+    const tcFecha = getTCEnFecha(fecha,'ccl');
     let netoArs, netoUsd;
-    if (m.moneda === 'USD') {
-      netoUsd = Math.abs(m.neto);
-      netoArs = netoUsd * tcFecha;
+    if (m.moneda==='USD') { netoUsd=Math.abs(m.neto); netoArs=netoUsd*tcFecha; }
+    else { netoArs=Math.abs(m.neto); netoUsd=netoArs/tcFecha; }
+    if (m.tipo==='COMPRA') {
+      a.costoArs+=netoArs; a.costoUsd+=netoUsd; a.cantidad+=m.cantidad;
     } else {
-      netoArs = Math.abs(m.neto);
-      netoUsd = netoArs / tcFecha;
-    }
-
-    if (m.tipo === 'COMPRA') {
-      a.costoArs += netoArs; a.costoUsd += netoUsd; a.cantidad += m.cantidad;
-    } else {
-      if (a.cantidad > 0) {
-        const fracVendida = m.cantidad / a.cantidad;
-        a.costoArs -= a.costoArs * fracVendida;
-        a.costoUsd -= a.costoUsd * fracVendida;
-        a.cantidad -= m.cantidad;
-        if (a.cantidad <= 0) { a.cantidad=0; a.costoArs=0; a.costoUsd=0; }
+      if (a.cantidad>0) {
+        const frac=m.cantidad/a.cantidad;
+        a.costoArs-=a.costoArs*frac; a.costoUsd-=a.costoUsd*frac; a.cantidad-=m.cantidad;
+        if (a.cantidad<=0){a.cantidad=0;a.costoArs=0;a.costoUsd=0;}
       }
     }
   });
-
-  const res = {};
-  Object.keys(acum).forEach(t => {
-    const a = acum[t];
-    res[t] = a.cantidad > 0
-      ? { pppArs: a.costoArs/a.cantidad, pppUsd: a.costoUsd/a.cantidad }
-      : null;
+  const res={};
+  Object.keys(acum).forEach(t=>{
+    const a=acum[t];
+    res[t]=a.cantidad>0?{pppArs:a.costoArs/a.cantidad,pppUsd:a.costoUsd/a.cantidad}:null;
   });
   return res;
 }
 
+// ── Pantalla de login ──
+function mostrarLogin() {
+  document.getElementById('app').innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <h1 class="login-title">Ingresar al dashboard</h1>
+        <p class="login-sub">Pegá el link de tu Google Sheets. El link no se guarda — desaparece cuando cerrás el tab.</p>
+        <label class="login-label">Link del Google Sheets</label>
+        <input class="login-input" id="sheets-input" type="text"
+          placeholder="https://docs.google.com/spreadsheets/d/..."
+          onkeydown="if(event.key==='Enter') ingresar()">
+        <p class="login-error" id="login-error">Link inválido. Verificá que sea un link de Google Sheets.</p>
+        <button class="login-btn" onclick="ingresar()">Ingresar</button>
+        <p class="login-note">El Sheets debe estar compartido con tu cuenta de Google y abierto en este navegador.</p>
+      </div>
+    </div>`;
+  setTimeout(() => document.getElementById('sheets-input')?.focus(), 100);
+}
+
+async function ingresar() {
+  const input = document.getElementById('sheets-input').value.trim();
+  const id = parsearIDDesdeLink(input);
+  const errEl = document.getElementById('login-error');
+  const inputEl = document.getElementById('sheets-input');
+  const btn = document.querySelector('.login-btn');
+
+  if (!id) {
+    inputEl.classList.add('error');
+    errEl.style.display = 'block';
+    return;
+  }
+
+  inputEl.classList.remove('error');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+
+  try {
+    SHEETS_ID = id;
+    // Intentar leer la pestaña Cuentas para verificar acceso
+    await fetchSheet('Cuentas');
+    // Si llegó acá, el acceso funciona
+    document.getElementById('cerrar-sesion').style.display = 'flex';
+    cargarCuentas();
+  } catch(e) {
+    SHEETS_ID = null;
+    inputEl.classList.add('error');
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Ingresar';
+  }
+}
+
+// ── Pantalla de cuentas ──
 async function cargarCuentas() {
   document.getElementById('app').innerHTML = '<div class="loading">Cargando cuentas...</div>';
   try {
     const rows = await fetchSheet('Cuentas');
-    const cuentas = rows.map(r => ({ comitente:r.c[0]?.v||'', nombre:r.c[1]?.v||'', ultimaAct:r.c[2]?.v||null, fechaDatos:r.c[3]?.v||'' }));
+    const cuentas = rows.map(r=>({comitente:r.c[0]?.v||'',nombre:r.c[1]?.v||'',ultimaAct:r.c[2]?.v||null,fechaDatos:r.c[3]?.v||''}));
     document.getElementById('app').innerHTML = `
       <div class="page">
         <p class="screen-title-sub">Dashboard de carteras</p>
         <h1 class="screen-title">Seleccionar cuenta</h1>
         <div class="account-list">
-          ${cuentas.map(c => `
+          ${cuentas.map(c=>`
             <div class="account-card ${!c.ultimaAct&&!c.fechaDatos?'sin-datos':''}"
               onclick="abrirCuenta('${c.comitente}','${c.nombre.replace(/'/g,"\\'")}','${c.ultimaAct||c.fechaDatos}')">
               <div class="avatar">${iniciales(c.nombre)}</div>
@@ -272,14 +356,14 @@ function abrirCuenta(comitente, nombre, fechaStr) {
 }
 
 function setMoneda(m) {
-  estado.moneda = m;
+  estado.moneda=m;
   document.querySelectorAll('#toggle-moneda .toggle-btn').forEach(b=>b.classList.toggle('active',b.textContent===m));
-  document.getElementById('toggle-tc').classList.toggle('disabled', m!=='USD');
+  document.getElementById('toggle-tc').classList.toggle('disabled',m!=='USD');
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
 }
 function setTC(tc) {
-  estado.tc = tc;
+  estado.tc=tc;
   document.querySelectorAll('#toggle-tc .toggle-btn').forEach(b=>b.classList.toggle('active',b.textContent===tc));
   actualizarValuacion();
   if (estado.posiciones.length) renderPosiciones();
@@ -291,139 +375,91 @@ function setTab(tab) {
 
 async function cargarDatos(comitente) {
   try {
-    const [rowsPos, rowsMovs, rowsTC] = await Promise.all([
-      fetchSheet('Posiciones'), fetchSheet('Movimientos'), fetchSheet('TC')
-    ]);
-
-    // TC histórico — acepta fecha como texto o Date. Valores ccl/mep numéricos o texto.
-    estado.tc_historico = rowsTC.map(r => {
-      const fecha = parseFecha(r.c[0]?.v);
-      const ccl = r.c[1]?.v != null ? Number(r.c[1].v) : null;
-      const mep = r.c[2]?.v != null ? Number(r.c[2].v) : null;
-      return { fecha, ccl, mep };
-    }).filter(r => r.fecha && r.ccl).sort((a,b)=>a.fecha-b.fecha);
-
-    if (estado.tc_historico.length) {
-      const last = estado.tc_historico[estado.tc_historico.length-1];
-      estado.tc_data = { ccl: last.ccl, mep: last.mep || last.ccl };
-    }
-
-    const tc = estado.tc_data.ccl || 1;
-    estado.posiciones = rowsPos.map(r => {
-      const ticker=r.c[1]?.v||'', tipo=r.c[3]?.v||'';
+    const [rowsPos,rowsMovs,rowsTC] = await Promise.all([fetchSheet('Posiciones'),fetchSheet('Movimientos'),fetchSheet('TC')]);
+    estado.tc_historico = rowsTC.map(r=>({fecha:parseFecha(r.c[0]?.v),ccl:r.c[1]?.v!=null?Number(r.c[1].v):null,mep:r.c[2]?.v!=null?Number(r.c[2].v):null})).filter(r=>r.fecha&&r.ccl).sort((a,b)=>a.fecha-b.fecha);
+    if (estado.tc_historico.length) { const last=estado.tc_historico[estado.tc_historico.length-1]; estado.tc_data={ccl:last.ccl,mep:last.mep||last.ccl}; }
+    const tc=estado.tc_data.ccl||1;
+    estado.posiciones = rowsPos.map(r=>{
+      const ticker=r.c[1]?.v||'',tipo=r.c[3]?.v||'';
       const cantRaw=r.c[4]?.v!=null?Number(r.c[4].v):null;
       const precioRaw=r.c[5]?.v!=null?Number(r.c[5].v):null;
       const importeRaw=r.c[6]?.v!=null?Number(r.c[6].v):0;
-      let cantidad=cantRaw, importeArsReal=importeRaw;
+      let cantidad=cantRaw,importeArsReal=importeRaw;
       if (tipo==='Cash') {
-        if (ticker==='ARS') { cantidad=importeRaw; importeArsReal=importeRaw; }
-        else if (['USD','USDC'].includes(ticker) && cantRaw==null) { cantidad=importeRaw; importeArsReal=importeRaw*tc; }
+        if (ticker==='ARS'){cantidad=importeRaw;importeArsReal=importeRaw;}
+        else if (['USD','USDC'].includes(ticker)&&cantRaw==null){cantidad=importeRaw;importeArsReal=importeRaw*tc;}
       }
-      return { comitente:String(r.c[0]?.v||''), ticker, nombre:r.c[2]?.v||'', tipo, cantidad, precio:precioRaw, importeArs:importeRaw, importeArsReal };
+      return {comitente:String(r.c[0]?.v||''),ticker,nombre:r.c[2]?.v||'',tipo,cantidad,precio:precioRaw,importeArs:importeRaw,importeArsReal};
     }).filter(p=>p.comitente===String(comitente));
-
-    estado.movimientos = rowsMovs.map(r => ({
-      comitente:String(r.c[0]?.v||''), fechaLiq:r.c[1]?.v||'', tipo:r.c[4]?.v||'', ticker:r.c[5]?.v||'',
-      cantidad:r.c[6]?.v!=null?Number(r.c[6].v):0, precio:r.c[7]?.v!=null?Number(r.c[7].v):0,
-      moneda:r.c[8]?.v||'ARS', neto:r.c[12]?.v!=null?Number(r.c[12].v):0
-    })).filter(m=>m.comitente===String(comitente));
-
+    estado.movimientos = rowsMovs.map(r=>({comitente:String(r.c[0]?.v||''),fechaLiq:r.c[1]?.v||'',tipo:r.c[4]?.v||'',ticker:r.c[5]?.v||'',cantidad:r.c[6]?.v!=null?Number(r.c[6].v):0,precio:r.c[7]?.v!=null?Number(r.c[7].v):0,moneda:r.c[8]?.v||'ARS',neto:r.c[12]?.v!=null?Number(r.c[12].v):0})).filter(m=>m.comitente===String(comitente));
     actualizarValuacion();
     renderPosiciones();
   } catch(e) {
     console.error(e);
-    document.querySelector('#tab-portafolio .page').innerHTML = `<p style="color:var(--neg)">Error: ${e.message}</p>`;
+    document.querySelector('#tab-portafolio .page').innerHTML=`<p style="color:var(--neg)">Error: ${e.message}</p>`;
   }
 }
 
 function renderPosiciones() {
-  const pppMap = calcularPPP(estado.movimientos);
-  const esUSD = estado.moneda==='USD';
-  const p = pre();
-  const tcActual = getTCActual();
-
-  const grupos = {};
-  estado.posiciones.forEach(pos => { (grupos[pos.tipo] ||= []).push(pos); });
-  const orden = ['CEDEAR','Accion','Titulo','Cash'];
-  const nomGrupo = { CEDEAR:'CEDEARs', Accion:'Acciones', Titulo:'Títulos públicos', Cash:'Cash' };
-
-  let html = `<div class="table-card"><div class="pos-table-wrap"><table class="pos-table"><thead><tr>
+  const pppMap=calcularPPP(estado.movimientos);
+  const esUSD=estado.moneda==='USD';
+  const p=pre();
+  const tcActual=getTCActual();
+  const grupos={};
+  estado.posiciones.forEach(pos=>{(grupos[pos.tipo]||=[]).push(pos);});
+  const orden=['CEDEAR','Accion','Titulo','Cash'];
+  const nomGrupo={CEDEAR:'CEDEARs',Accion:'Acciones',Titulo:'Títulos públicos',Cash:'Cash'};
+  let html=`<div class="table-card"><div class="pos-table-wrap"><table class="pos-table"><thead><tr>
     <th style="text-align:left;min-width:180px">Activo</th>
     <th>Cantidad</th><th>Precio</th><th>PPP</th><th>Resultado</th><th>Var% total</th><th>Posición ${p.trim()}</th>
   </tr></thead><tbody>`;
-
-  orden.forEach(tipo => {
+  orden.forEach(tipo=>{
     if (!grupos[tipo]?.length) return;
-    const subtotalArs = grupos[tipo].reduce((s,pos)=>s+(pos.importeArsReal||0),0);
-    html += `<tr class="group-row"><td colspan="6">${nomGrupo[tipo]||tipo}</td><td>${p}${fmtNum(convertir(subtotalArs))}</td></tr>`;
-
-    grupos[tipo].forEach(pos => {
-      const isCash = pos.tipo==='Cash';
-      const isTitulo = pos.tipo==='Titulo';
-      const isUSDTicker = ['USD','USDC','USD CV EX'].includes(pos.ticker);
-
-      // Cantidad
-      let cantStr = '—';
-      if (pos.cantidad != null) {
-        cantStr = fmtNum(Math.abs(pos.cantidad), isCash?2:0);
-        if (pos.ticker==='ARS' && pos.cantidad<0) cantStr = '-'+cantStr;
-      }
-
-      // Precio (precio del PDF está en la misma escala para todos: para bonos es "por 100 VN")
+    const subtotalArs=grupos[tipo].reduce((s,pos)=>s+(pos.importeArsReal||0),0);
+    html+=`<tr class="group-row"><td colspan="6">${nomGrupo[tipo]||tipo}</td><td>${p}${fmtNum(convertir(subtotalArs))}</td></tr>`;
+    grupos[tipo].forEach(pos=>{
+      const isCash=pos.tipo==='Cash';
+      const isTitulo=pos.tipo==='Titulo';
+      const isUSDTicker=['USD','USDC','USD CV EX'].includes(pos.ticker);
+      let cantStr='—';
+      if (pos.cantidad!=null){cantStr=fmtNum(Math.abs(pos.cantidad),isCash?2:0);if(pos.ticker==='ARS'&&pos.cantidad<0)cantStr='-'+cantStr;}
       let precioStr='—';
-      if (isCash) {
-        if (pos.ticker==='ARS') precioStr = esUSD ? 'USD '+fmtNum(1/tcActual,6) : '$ 1,00';
-        else if (isUSDTicker) precioStr = esUSD ? 'USD 1,00' : '$ '+fmtNum(tcActual,0);
-      } else if (pos.precio != null) {
-        precioStr = p + fmtNum(esUSD ? pos.precio/tcActual : pos.precio);
+      if (isCash){
+        if (pos.ticker==='ARS') precioStr=esUSD?'USD '+fmtNum(1/tcActual,6):'$ 1,00';
+        else if (isUSDTicker) precioStr=esUSD?'USD 1,00':'$ '+fmtNum(tcActual,0);
+      } else if (pos.precio!=null) precioStr=p+fmtNum(esUSD?pos.precio/tcActual:pos.precio);
+      const ppp=pppMap[pos.ticker];
+      let pppStr='—',esTransf=false,pppEscala=null;
+      if (!isCash){
+        if (ppp){
+          pppEscala=isTitulo?{ars:ppp.pppArs*100,usd:ppp.pppUsd*100}:{ars:ppp.pppArs,usd:ppp.pppUsd};
+          pppStr=p+fmtNum(esUSD?pppEscala.usd:pppEscala.ars);
+        } else { pppStr='<span class="muted">Transf. valores</span>'; esTransf=true; }
       }
-
-      // PPP — el calculado viene en "costo por unidad". Para bonos hay que llevarlo
-      // a la escala "por 100 VN" multiplicando por 100, para comparar con el precio.
-      const ppp = pppMap[pos.ticker];
-      let pppStr='—', esTransf=false, pppEscalaPrecio=null;
-      if (!isCash) {
-        if (ppp) {
-          // pppArs es costo por unidad nominal; el precio de bonos es por 100 VN
-          pppEscalaPrecio = isTitulo
-            ? { ars: ppp.pppArs*100, usd: ppp.pppUsd*100 }
-            : { ars: ppp.pppArs,     usd: ppp.pppUsd };
-          pppStr = p + fmtNum(esUSD ? pppEscalaPrecio.usd : pppEscalaPrecio.ars);
-        } else {
-          pppStr = '<span class="muted">Transf. valores</span>';
-          esTransf = true;
-        }
+      let resStr='—',varStr='—';
+      if (!isCash&&!esTransf&&pppEscala&&pos.cantidad&&pos.precio){
+        const pppComp=esUSD?pppEscala.usd:pppEscala.ars;
+        const precioComp=esUSD?pos.precio/tcActual:pos.precio;
+        const cantEf=isTitulo?pos.cantidad/100:pos.cantidad;
+        const resVal=(precioComp-pppComp)*cantEf;
+        const varPct=((precioComp-pppComp)/pppComp)*100;
+        const cls=resVal>=0?'pos':'neg';
+        resStr=`<span class="${cls}">${resVal>=0?'+':'-'}${p}${fmtNum(Math.abs(resVal))}</span>`;
+        varStr=`<span class="${cls}">${varPct>=0?'↑ ':'↓ '}${Math.abs(varPct).toFixed(1)}%</span>`;
       }
-
-      // Resultado y Var% — comparando en la misma escala (precio vs ppp-escala-precio)
-      let resStr='—', varStr='—';
-      if (!isCash && !esTransf && pppEscalaPrecio && pos.cantidad && pos.precio) {
-        const pppComp = esUSD ? pppEscalaPrecio.usd : pppEscalaPrecio.ars;
-        const precioComp = esUSD ? pos.precio/tcActual : pos.precio;
-        // unidades efectivas: bonos cotizan por 100 VN
-        const cantEf = isTitulo ? pos.cantidad/100 : pos.cantidad;
-        const resVal = (precioComp - pppComp) * cantEf;
-        const varPct = ((precioComp - pppComp) / pppComp) * 100;
-        const cls = resVal>=0?'pos':'neg';
-        resStr = `<span class="${cls}">${resVal>=0?'+':'-'}${p}${fmtNum(Math.abs(resVal))}</span>`;
-        varStr = `<span class="${cls}">${varPct>=0?'↑ ':'↓ '}${Math.abs(varPct).toFixed(1)}%</span>`;
-      }
-
-      const posVal = convertir(pos.importeArsReal);
-      const posStr = `<span class="${pos.importeArsReal<0?'neg':''}">${p}${fmtNum(Math.abs(posVal))}</span>`;
-
-      html += `<tr>
+      const posVal=convertir(pos.importeArsReal);
+      const posStr=`<span class="${pos.importeArsReal<0?'neg':''}">${p}${fmtNum(Math.abs(posVal))}</span>`;
+      html+=`<tr>
         <td><div class="ticker-name">${pos.ticker}</div><div class="ticker-sub">${pos.nombre}</div></td>
         <td>${cantStr}</td><td>${precioStr}</td><td>${pppStr}</td><td>${resStr}</td><td>${varStr}</td><td>${posStr}</td>
       </tr>`;
     });
   });
-
-  html += '</tbody></table></div></div>';
-  document.querySelector('#tab-portafolio .page').innerHTML = html;
+  html+='</tbody></table></div></div>';
+  document.querySelector('#tab-portafolio .page').innerHTML=html;
 }
 
-cargarCuentas();
+mostrarLogin();
 </script>
 </body>
 </html>
